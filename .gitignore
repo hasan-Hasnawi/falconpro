@@ -32,3 +32,6 @@ Thumbs.db
 README-BACKUP.md
 admin-html-check.html
 test.png
+
+.vercel
+.env*
