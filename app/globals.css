@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 50% 97%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 224 73% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 50% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 30% 94%;
+    --muted-foreground: 220 10% 40%;
+    --accent: 43 74% 55%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 30% 90%;
+    --input: 220 30% 90%;
+    --ring: 224 73% 42%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-gradient-to-br from-falcon-bluePale via-white to-falcon-bluePale text-foreground antialiased min-h-screen;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-falcon-goldLight via-falcon-gold to-falcon-goldLight bg-clip-text text-transparent;
+  }
+
+  .text-gradient-blue {
+    @apply bg-gradient-to-r from-falcon-blue via-falcon-blueLight to-falcon-blue bg-clip-text text-transparent;
+  }
+
+  .bg-glass {
+    @apply bg-white/70 backdrop-blur-sm border border-white/50;
+  }
+
+  .btn-primary {
+    @apply bg-falcon-blue text-white font-bold px-6 py-3 rounded-xl hover:bg-falcon-blueDark transition-all duration-300 shadow-lg shadow-falcon-blue/25;
+  }
+
+  .btn-gold {
+    @apply bg-falcon-gold text-falcon-dark font-bold px-6 py-3 rounded-xl hover:bg-falcon-goldLight transition-all duration-300 shadow-lg shadow-falcon-gold/20;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-falcon-blue/10 hover:-translate-y-1;
+  }
+
+  .card-product {
+    @apply bg-white border border-gray-100 rounded-2xl overflow-hidden hover:border-falcon-blue/30 hover:shadow-lg hover:shadow-falcon-blue/10 transition-all duration-300;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-falcon-blue focus:ring-2 focus:ring-falcon-blue/20 transition-all;
+  }
+
+  .section-padding {
+    @apply py-16 px-4 sm:px-6;
+  }
+}

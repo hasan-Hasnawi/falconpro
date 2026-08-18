@@ -1,0 +1,106 @@
+{
+  "metadata": {
+    "title": "FalconPro - مكملات غذائية وبروتين للمحترفين",
+    "description": "متجر FalconPro الرسمي - أفضل المكملات الغذائية والبروتين وبناء الأجسام في العراق"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "categories": "الأقسام",
+    "cart": "السلة",
+    "login": "تسجيل الدخول",
+    "profile": "حسابي",
+    "logout": "تسجيل الخروج",
+    "admin": "لوحة التحكم"
+  },
+  "hero": {
+    "title": "FalconPro",
+    "subtitle": "قوة الصقر في كل جرعة",
+    "description": "أفضل المكملات الغذائية والبروتين للاعبي كمال الأجسام والرياضيين المحترفين في العراق",
+    "cta": "تسوق الآن",
+    "motivation1": "لا حدود لقوتك",
+    "motivation2": "اصنع جسدك المثالي",
+    "motivation3": "كل تدريب يقربك للقمة"
+  },
+  "categories": {
+    "title": "تصفح الأقسام",
+    "supplements": "مكملات غذائية",
+    "health": "منتجات صحية",
+    "packages": "عروض البكجات",
+    "viewAll": "عرض الكل"
+  },
+  "products": {
+    "addToCart": "أضف للسلة",
+    "outOfStock": "نفذت الكمية",
+    "price": "السعر",
+    "filter": "تصفية",
+    "sort": "ترتيب",
+    "search": "بحث",
+    "noProducts": "لا توجد منتجات",
+    "iqd": "د.ع"
+  },
+  "cart": {
+    "title": "سلة المشتريات",
+    "empty": "السلة فارغة",
+    "continueShopping": "مواصلة التسوق",
+    "total": "المجموع",
+    "discount": "الخصم",
+    "finalTotal": "الإجمالي",
+    "checkout": "إتمام الطلب",
+    "remove": "حذف",
+    "quantity": "الكمية"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "phone": "رقم الهاتف",
+    "province": "المحافظة",
+    "address": "العنوان التفصيلي",
+    "discountCode": "كود الخصم",
+    "apply": "تطبيق",
+    "orderAsGuest": "الطلب كزائر",
+    "orderSummary": "ملخص الطلب",
+    "confirm": "تأكيد الطلب",
+    "success": "تم إرسال الطلب بنجاح!",
+    "selectProvince": "اختر المحافظة",
+    "subtotal": "المجموع الفرعي",
+    "discount": "الخصم",
+    "delivery": "التوصيل",
+    "freeDelivery": "توصيل مجاني",
+    "finalTotal": "الإجمالي",
+    "submit": "تأكيد الطلب",
+    "contactInfo": "معلومات التواصل",
+    "addressPlaceholder": "الحي، أقرب نقطة دالة",
+    "excludedProvince": "عذراً، لا يتوفر التوصيل لهذه المحافظة حالياً",
+    "myCoupons": "كوبوناتي",
+    "selectCoupon": "اختر من كوبوناتي",
+    "noActiveCoupons": "لا توجد كوبونات نشطة",
+    "copied": "تم النسخ"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "phone": "رقم الهاتف",
+    "password": "كلمة المرور",
+    "name": "الاسم",
+    "submit": "إرسال",
+    "skip": "تخطي (الطلب بدون تسجيل)",
+    "error": "خطأ في تسجيل الدخول",
+    "success": "تم تسجيل الدخول بنجاح",
+    "minPassword": "كلمة المرور يجب أن تكون 4 أحرف على الأقل"
+  },
+  "profile": {
+    "title": "حسابي",
+    "orders": "طلباتي",
+    "loyalty": "كرت الولاء",
+    "loyaltyText": "كل {count} طلبات تحصل على هدية مجانية!",
+    "ordersCount": "عدد الطلبات",
+    "freeGifts": "هدايا مجانية استلمتها",
+    "nextGift": "الطلبات المتبقية للهدية التالية",
+    "noOrders": "لم تقدم أي طلبات بعد"
+  },
+  "footer": {
+    "rights": "جميع الحقوق محفوظة",
+    "contact": "تواصل معنا",
+    "followUs": "تابعنا"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "metadata": {
+    "title": "FalconPro - Supplements & Protein for Pros",
+    "description": "Official FalconPro store - Best supplements, protein, and bodybuilding products in Iraq"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "cart": "Cart",
+    "login": "Login",
+    "profile": "My Account",
+    "logout": "Logout",
+    "admin": "Admin Panel"
+  },
+  "hero": {
+    "title": "FalconPro",
+    "subtitle": "Falcon Power in Every Scoop",
+    "description": "The best supplements, protein, and bodybuilding products for professional athletes in Iraq",
+    "cta": "Shop Now",
+    "motivation1": "No Limits to Your Power",
+    "motivation2": "Build Your Perfect Body",
+    "motivation3": "Every Training Brings You Closer to the Top"
+  },
+  "categories": {
+    "title": "Browse Categories",
+    "supplements": "Supplements",
+    "health": "Health Products",
+    "packages": "Package Deals",
+    "viewAll": "View All"
+  },
+  "products": {
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "price": "Price",
+    "filter": "Filter",
+    "sort": "Sort",
+    "search": "Search",
+    "noProducts": "No products found",
+    "iqd": "IQD"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Cart is empty",
+    "continueShopping": "Continue Shopping",
+    "total": "Total",
+    "discount": "Discount",
+    "finalTotal": "Final Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "quantity": "Quantity"
+  },
+  "checkout": {
+    "title": "Complete Order",
+    "phone": "Phone Number",
+    "province": "Province",
+    "address": "Detailed Address",
+    "discountCode": "Discount Code",
+    "apply": "Apply",
+    "orderAsGuest": "Order as Guest",
+    "orderSummary": "Order Summary",
+    "confirm": "Confirm Order",
+    "success": "Order placed successfully!",
+    "selectProvince": "Select Province",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "delivery": "Delivery",
+    "freeDelivery": "Free Delivery",
+    "finalTotal": "Final Total",
+    "submit": "Place Order",
+    "contactInfo": "Contact Information",
+    "addressPlaceholder": "Neighborhood, nearest landmark",
+    "excludedProvince": "Sorry, delivery is not available for this province currently",
+    "myCoupons": "My Coupons",
+    "selectCoupon": "Select from my coupons",
+    "noActiveCoupons": "No active coupons",
+    "copied": "Copied"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "phone": "Phone Number",
+    "password": "Password",
+    "name": "Name",
+    "submit": "Submit",
+    "skip": "Skip (Order without login)",
+    "error": "Login error",
+    "success": "Logged in successfully",
+    "minPassword": "Password must be at least 4 characters"
+  },
+  "profile": {
+    "title": "My Account",
+    "orders": "My Orders",
+    "loyalty": "Loyalty Card",
+    "loyaltyText": "Every {count} orders get a free gift!",
+    "ordersCount": "Orders Count",
+    "freeGifts": "Free Gifts Received",
+    "nextGift": "Orders remaining for next gift",
+    "noOrders": "No orders yet"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "contact": "Contact Us",
+    "followUs": "Follow Us"
+  }
+}
