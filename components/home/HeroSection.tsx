@@ -171,7 +171,7 @@ export default function HeroSection() {
                 />
               </div>
               <h1 className="text-4xl font-extrabold text-white mt-2">
-                {title}
+                Falcon<span className="text-falcon-gold">Pro</span>
               </h1>
             </motion.div>
 
