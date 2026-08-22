@@ -9,7 +9,7 @@ export interface CartItemFlavor {
 
 export interface CartItem {
   productId: string;
-  name: string;
+  name: any;
   price: number;
   quantity: number;
   image: string;

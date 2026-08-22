@@ -7,6 +7,7 @@ import { ArrowRight, Check, Tag, MapPin, Phone, Ticket, X, ChevronDown, ChevronU
 import { useCart } from '@/components/cart/CartContext';
 import { useToast } from '@/components/ui/Toast';
 import { useAuth } from '@/components/auth/AuthContext';
+import { getLocalizedName } from '@/lib/utils';
 import FreeProductSelector from '@/components/checkout/FreeProductSelector';
 
 interface Settings {
@@ -459,7 +460,7 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={`${item.productId}-${item.flavor?.name?.ar || 'default'}`} className="flex justify-between text-sm">
                   <span className="text-gray-600">
-                    {item.name} {item.flavor ? `(${item.flavor.name.ar})` : ''} × {item.quantity}
+                    {getLocalizedName(item.name, locale)} {item.flavor ? `(${item.flavor.name.ar})` : ''} × {item.quantity}
                   </span>
                   <span className="text-falcon-dark">{(item.price * item.quantity).toLocaleString()} د.ع</span>
                 </div>

@@ -7,12 +7,13 @@ import {
   Package, Truck, CheckCircle, XCircle, Clock, Eye, Search, Calendar, Filter,
   ArrowUpRight, TrendingUp, ShoppingBag
 } from 'lucide-react';
+import { getLocalizedName } from '@/lib/utils';
 
 interface Order {
   _id: string;
   userId?: { phone: string; name: string };
   guestPhone?: string;
-  items: { name: string; quantity: number; price: number }[];
+  items: { name: any; quantity: number; price: number }[];
   finalTotal: number;
   status: string;
   phone: string;
@@ -317,7 +318,7 @@ export default function AdminOrders() {
                   <div className="space-y-2 mb-4 p-4 bg-gray-50 rounded-xl">
                     {order.items.map((item, idx) => (
                       <div key={idx} className="flex items-center justify-between text-sm">
-                        <span className="text-falcon-dark font-medium">{item.name} × {item.quantity}</span>
+                        <span className="text-falcon-dark font-medium">{getLocalizedName(item.name)} × {item.quantity}</span>
                         <span className="text-gray-500">{(item.price * item.quantity).toLocaleString()} د.ع</span>
                       </div>
                     ))}

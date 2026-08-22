@@ -9,6 +9,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import Image from 'next/image';
+import { getLocalizedName } from '@/lib/utils';
 
 interface Order {
   _id: string;
@@ -18,7 +19,7 @@ interface Order {
   status: string;
   items: Array<{
     productId: string;
-    name: string;
+    name: any;
     price: number;
     quantity: number;
     image?: string;
@@ -187,13 +188,13 @@ export default function OrderDetailPage() {
                           <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-gray-100">
                             <Image 
                               src={item.image || 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=100&q=80'} 
-                              alt={item.name}
+                              alt={getLocalizedName(item.name)}
                               fill
                               className="object-cover"
                               sizes="56px"
                             />
                           </div>
-                          <span className="text-falcon-dark font-medium">{item.name}</span>
+                          <span className="text-falcon-dark font-medium">{getLocalizedName(item.name)}</span>
                         </div>
                       </td>
                       <td className="py-4 px-6 text-center text-gray-600 font-bold">{item.quantity}</td>

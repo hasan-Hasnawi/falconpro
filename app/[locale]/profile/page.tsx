@@ -6,11 +6,12 @@ import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Gift, Clock, Package, Truck, CheckCircle, XCircle, Ticket, ChevronLeft, Sparkles, X } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthContext';
+import { getLocalizedName } from '@/lib/utils';
 import Link from 'next/link';
 
 interface Order {
   _id: string;
-  items: { name: string; quantity: number; price: number }[];
+  items: { name: string | { ar: string; en: string }; quantity: number; price: number }[];
   finalTotal: number;
   status: string;
   createdAt: string;
@@ -265,7 +266,7 @@ export default function ProfilePage() {
                     </div>
                     <div className="space-y-1 mb-3">
                       {order.items.map((item, idx) => (
-                        <p key={idx} className="text-gray-600 text-sm">{item.name} × {item.quantity}</p>
+                        <p key={idx} className="text-gray-600 text-sm">{getLocalizedName(item.name, locale)} × {item.quantity}</p>
                       ))}
                     </div>
                     <div className="flex justify-between items-center pt-3 border-t border-gray-100">

@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { useCart } from '@/components/cart/CartContext';
+import { getLocalizedName } from '@/lib/utils';
 
 export default function CartPage() {
   const params = useParams();
@@ -54,7 +55,7 @@ export default function CartPage() {
                   <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden shrink-0 bg-gray-50">
                     <Image
                       src={item.image || 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=200&q=80&fm=webp'}
-                      alt={item.name}
+                      alt={getLocalizedName(item.name, locale)}
                       fill
                       className="object-cover"
                       sizes="80px"
@@ -62,7 +63,7 @@ export default function CartPage() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-falcon-dark font-semibold text-sm sm:text-base line-clamp-2">{item.name}</h3>
+                    <h3 className="text-falcon-dark font-semibold text-sm sm:text-base line-clamp-2">{getLocalizedName(item.name, locale)}</h3>
                     {item.flavor && (
                       <p className="text-gray-500 text-xs mt-1">
                         النكهة: {item.flavor.name.ar}
