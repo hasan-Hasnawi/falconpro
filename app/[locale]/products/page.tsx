@@ -63,7 +63,7 @@ function ProductsContent() {
     const fetchWithTimeout = (url: string, timeout = 8000) => {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), timeout);
-      return fetch(url, { signal: controller.signal })
+      return fetch(url, { signal: controller.signal, cache: 'no-store' })
         .then((r) => { clearTimeout(id); return r.ok ? r.json() : Promise.reject(); })
         .catch((err) => { clearTimeout(id); throw err; });
     };

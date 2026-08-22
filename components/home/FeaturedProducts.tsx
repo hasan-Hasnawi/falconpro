@@ -22,7 +22,7 @@ export default function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    fetch('/api/products?featured=true')
+    fetch('/api/products?featured=true', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => setProducts(data.products || []))
       .catch(console.error);

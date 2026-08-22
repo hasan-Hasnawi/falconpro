@@ -55,7 +55,7 @@ export default function CategoriesSection() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    fetch('/api/categories?type=main')
+    fetch('/api/categories?type=main', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => setCategories(data.categories || []))
       .catch(console.error);
