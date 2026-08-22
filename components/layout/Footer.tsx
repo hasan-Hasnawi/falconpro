@@ -4,12 +4,42 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Instagram, Phone, MapPin } from 'lucide-react';
+import { Instagram, Phone } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+interface SiteSettings {
+  sitePhone: string;
+  siteInstagram: string;
+  siteDescription: string;
+}
+
+const defaults: SiteSettings = {
+  sitePhone: '0776 666 1816',
+  siteInstagram: '@199fal',
+  siteDescription: 'أفضل المكملات الغذائية والبروتين للاعبي كمال الأجسام والرياضيين المحترفين في العراق',
+};
 
 export default function Footer() {
   const params = useParams();
   const locale = (Array.isArray(params.locale) ? params.locale[0] : params.locale) || 'ar';
   const t = useTranslations('footer');
+  const [settings, setSettings] = useState<SiteSettings>(defaults);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((data) => {
+        const s = data.settings;
+        if (s) {
+          setSettings({
+            sitePhone: s.sitePhone || defaults.sitePhone,
+            siteInstagram: s.siteInstagram || defaults.siteInstagram,
+            siteDescription: s.siteDescription || defaults.siteDescription,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="bg-falcon-blueDark border-t border-white/10 mt-auto">
@@ -33,7 +63,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-white/50 text-sm leading-relaxed">
-              أفضل المكملات الغذائية والبروتين للاعبي كمال الأجسام والرياضيين المحترفين في العراق
+              {settings.siteDescription}
             </p>
           </div>
 
@@ -51,18 +81,14 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">{t('contact')}</h3>
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-white/50 text-sm">
+              <a href={`tel:${settings.sitePhone.replace(/\s/g, '')}`} className="flex items-center gap-2 text-white/50 text-sm hover:text-falcon-gold transition-colors">
                 <Phone className="w-4 h-4 text-falcon-gold" />
-                <span>0770 123 4567</span>
-              </div>
-              <div className="flex items-center gap-2 text-white/50 text-sm">
-                <MapPin className="w-4 h-4 text-falcon-gold" />
-                <span>بغداد، العراق</span>
-              </div>
-              <div className="flex items-center gap-2 text-white/50 text-sm">
+                <span>{settings.sitePhone}</span>
+              </a>
+              <a href="https://instagram.com/199fal" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/50 text-sm hover:text-falcon-gold transition-colors">
                 <Instagram className="w-4 h-4 text-falcon-gold" />
-                <span>@falconpro.iq</span>
-              </div>
+                <span>{settings.siteInstagram}</span>
+              </a>
             </div>
           </div>
         </div>

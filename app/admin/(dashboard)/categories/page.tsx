@@ -48,22 +48,34 @@ export default function AdminCategories() {
   };
 
   const createCategory = async () => {
-    const res = await fetch('/api/categories', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: { ar: form.nameAr, en: form.nameEn },
-        type: form.type,
-        parentCategory: form.parentCategory || null,
-        sortOrder: Number(form.sortOrder),
-        icon: form.icon,
-        image: form.image,
-      }),
-    });
-    if (res.ok) {
-      setShowForm(false);
-      setForm({ nameAr: '', nameEn: '', type: 'main', parentCategory: '', sortOrder: '0', icon: '', image: '' });
-      loadData();
+    if (!form.nameAr.trim()) {
+      showToast('أدخل اسم القسم بالعربي', 'error');
+      return;
+    }
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: { ar: form.nameAr, en: form.nameEn },
+          type: form.type,
+          parentCategory: form.parentCategory || null,
+          sortOrder: Number(form.sortOrder),
+          icon: form.icon,
+          image: form.image,
+        }),
+      });
+      if (res.ok) {
+        showToast('تم إضافة القسم بنجاح', 'success');
+        setShowForm(false);
+        setForm({ nameAr: '', nameEn: '', type: 'main', parentCategory: '', sortOrder: '0', icon: '', image: '' });
+        loadData();
+      } else {
+        const data = await res.json();
+        showToast(data.error || 'فشل إضافة القسم', 'error');
+      }
+    } catch {
+      showToast('حدث خطأ أثناء إضافة القسم', 'error');
     }
   };
 

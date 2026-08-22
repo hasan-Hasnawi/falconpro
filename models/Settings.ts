@@ -53,7 +53,7 @@ const SettingsSchema = new mongoose.Schema({
   }],
   deliveryFee: {
     type: Number,
-    default: 0,
+    default: 5000,
   },
   deliveryFeesByProvince: {
     type: Map,
@@ -67,6 +67,27 @@ const SettingsSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  sitePhone: {
+    type: String,
+    default: '0776 666 1816',
+  },
+  siteInstagram: {
+    type: String,
+    default: '@199fal',
+  },
+  siteDescription: {
+    type: String,
+    default: 'أفضل المكملات الغذائية والبروتين للاعبي كمال الأجسام والرياضيين المحترفين في العراق',
+  },
+  heroTitleAr: { type: String, default: 'FalconPro' },
+  heroTitleEn: { type: String, default: 'FalconPro' },
+  heroSubtitleAr: { type: String, default: 'Event Title' },
+  heroSubtitleEn: { type: String, default: 'Event Title' },
+  heroDescriptionAr: { type: String, default: 'Best supplements and protein' },
+  heroDescriptionEn: { type: String, default: 'Best supplements and protein' },
+  heroCtaAr: { type: String, default: 'Shop Now' },
+  heroCtaEn: { type: String, default: 'Shop Now' },
+  heroImages: [{ type: String }],
   updatedAt: {
     type: Date,
     default: Date.now,

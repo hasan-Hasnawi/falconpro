@@ -2,12 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Settings, AlertTriangle, Truck } from 'lucide-react';
+import { Save, Settings, AlertTriangle, Truck, Phone, Instagram, FileText, Image } from 'lucide-react';
+import HeroTextEditor from './HeroTextEditor';
+import HeroImagesEditor from './HeroImagesEditor';
 
 export default function AdminSettings() {
   const [deliveryFee, setDeliveryFee] = useState<number | ''>('');
   const [excludedProvinces, setExcludedProvinces] = useState<string[]>([]);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [sitePhone, setSitePhone] = useState('');
+  const [siteInstagram, setSiteInstagram] = useState('');
+  const [siteDescription, setSiteDescription] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -21,6 +26,9 @@ export default function AdminSettings() {
           setDeliveryFee(s.deliveryFee ?? '');
           setExcludedProvinces(s.excludedProvinces || []);
           setMaintenanceMode(s.maintenanceMode || false);
+          setSitePhone(s.sitePhone || '0776 666 1816');
+          setSiteInstagram(s.siteInstagram || '@199fal');
+          setSiteDescription(s.siteDescription || '');
         }
         setLoading(false);
       })
@@ -37,6 +45,9 @@ export default function AdminSettings() {
         deliveryFee: deliveryFee === '' ? 0 : Number(deliveryFee),
         excludedProvinces,
         maintenanceMode,
+        sitePhone,
+        siteInstagram,
+        siteDescription,
       }),
     });
     if (res.ok) {
@@ -102,8 +113,8 @@ export default function AdminSettings() {
               <label className="text-gray-600 text-sm mb-2 block font-medium">المحافظات بدون توصيل</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
                 {[
-                  'بغداد', 'البصرة', 'نينوى', 'أربيل', 'السليمانية', 'الأنبار', 'بابل', 'كربلاء',
-                  'النجف', 'واسط', 'صلاح الدين', 'ديالى', 'كركوك', 'دهوك', 'المثنى', 'القادسية',
+                  'بغداد', 'البصرة', 'نينوى', 'الأنبار', 'بابل', 'كربلاء',
+                  'النجف', 'واسط', 'صلاح الدين', 'ديالى', 'كركوك', 'المثنى', 'القادسية',
                   'ذي قار', 'ميسان'
                 ].map((prov) => (
                   <label key={prov} className="flex items-center gap-2 cursor-pointer hover:text-falcon-blue transition-colors">
@@ -124,6 +135,70 @@ export default function AdminSettings() {
                 ))}
               </div>
             </div>
+          </div>
+
+          <div className="border-t border-gray-100" />
+
+          {/* Contact Info Section */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-falcon-dark flex items-center gap-2">
+              <Phone className="w-6 h-6 text-falcon-blue" />
+              معلومات التواصل
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-gray-600 text-sm mb-2 block font-medium">رقم الهاتف</label>
+                <input
+                  type="text"
+                  value={sitePhone}
+                  onChange={(e) => setSitePhone(e.target.value)}
+                  placeholder="0776 666 1816"
+                  className="input-field"
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 text-sm mb-2 block font-medium">حساب انستغرام</label>
+                <input
+                  type="text"
+                  value={siteInstagram}
+                  onChange={(e) => setSiteInstagram(e.target.value)}
+                  placeholder="@199fal"
+                  className="input-field"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-gray-600 text-sm mb-2 block font-medium">وصف الموقع (يظهر في الفوتر)</label>
+              <textarea
+                value={siteDescription}
+                onChange={(e) => setSiteDescription(e.target.value)}
+                rows={2}
+                className="input-field resize-none"
+              />
+            </div>
+          </div>
+
+          <div className="border-t border-gray-100" />
+
+          {/* Hero Text Section */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-falcon-dark flex items-center gap-2">
+              <FileText className="w-6 h-6 text-falcon-blue" />
+              نصوص الصفحة الرئيسية
+            </h2>
+            <HeroTextEditor />
+          </div>
+
+          <div className="border-t border-gray-100" />
+
+          {/* Hero Images Section */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-falcon-dark flex items-center gap-2">
+              <Image className="w-6 h-6 text-falcon-blue" />
+              صور خلفية الصفحة الرئيسية
+            </h2>
+            <p className="text-gray-400 text-sm">أضف روابط الصور لعرض كاروسيل في الخلفية. يمكنك إضافة أكثر من صورة.</p>
+            <HeroImagesEditor />
           </div>
 
           <div className="border-t border-gray-100" />
