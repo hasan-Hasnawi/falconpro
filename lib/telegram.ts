@@ -13,7 +13,25 @@ export async function sendOrderNotification(order: any) {
   const isLocalhost = appUrl.includes('localhost') || appUrl.includes('127.0.0.1');
 
   const phone = order.phone?.replace(/^0/, '+964') || '';
-  const whatsappUrl = phone ? `https://wa.me/${phone}` : '';
+
+  const shortOrderId = orderId.toString().slice(-6);
+  const whatsappItems = order.items
+    .map((item: any) => {
+      const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
+      return `${name} × ${item.quantity}`;
+    })
+    .join(' , ');
+
+  const whatsappMessage = encodeURIComponent(
+    `مرحباً من FalconPro\n` +
+    `طلبك رقم #${shortOrderId} جاهز\n` +
+    `المنتجات: ${whatsappItems}\n` +
+    `الإجمالي: ${order.finalTotal.toLocaleString()} د.ع\n` +
+    `العنوان: ${order.province} - ${order.address}\n` +
+    `هل تريد تاكيد الطلب؟`
+  );
+
+  const whatsappUrl = phone ? `https://wa.me/${phone}?text=${whatsappMessage}` : '';
 
   const itemsText = order.items
     .map(
