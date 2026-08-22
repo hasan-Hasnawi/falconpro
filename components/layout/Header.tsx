@@ -37,22 +37,41 @@ export default function Header() {
       className="fixed top-0 left-0 right-0 z-50 bg-falcon-blue border-b border-white/10"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-20 sm:h-24">
-          {/* Logo */}
-          <Link href={`/${locale}`} className="flex items-center gap-3 shrink-0">
-            <div className="relative w-14 h-14 sm:w-20 sm:h-20">
+        <div className="relative flex items-center justify-between h-20 sm:h-24">
+          {/* Mobile: Text name in corner */}
+          <Link href={`/${locale}`} className="flex items-center shrink-0 sm:hidden">
+            <span className="text-white font-bold text-lg">
+              Falcon<span className="text-falcon-gold">Pro</span>
+            </span>
+          </Link>
+
+          {/* Logo - centered on mobile, left on desktop */}
+          <Link href={`/${locale}`} className="hidden sm:flex items-center gap-3 shrink-0">
+            <div className="relative w-20 h-20">
               <Image
                 src="/images/falconpro-logo.png"
                 alt="FalconPro"
                 fill
                 className="object-contain"
-                sizes="(max-width: 640px) 56px, 80px"
+                sizes="80px"
                 priority
               />
             </div>
-            <span className="text-white font-bold text-xl hidden sm:block">
+            <span className="text-white font-bold text-xl">
               Falcon<span className="text-falcon-gold">Pro</span>
             </span>
+          </Link>
+          <Link href={`/${locale}`} className="sm:hidden absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+            <div className="relative w-12 h-12">
+              <Image
+                src="/images/falconpro-logo.png"
+                alt="FalconPro"
+                fill
+                className="object-contain"
+                sizes="48px"
+                priority
+              />
+            </div>
           </Link>
 
           {/* Desktop Nav */}
