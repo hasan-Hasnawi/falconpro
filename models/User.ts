@@ -19,12 +19,7 @@ const CouponSchema = new mongoose.Schema({
     en: { type: String, default: '' },
   },
   freeProductChoice: {
-    type: {
-      type: { type: String, enum: ['admin', 'user'], default: 'admin' },
-      productId: { type: String, default: null },
-      categoryId: { type: String, default: null },
-      maxValue: { type: Number, default: null },
-    },
+    type: mongoose.Schema.Types.Mixed,
     default: {},
   },
   isUsed: {
