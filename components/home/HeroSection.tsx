@@ -149,10 +149,28 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-3 sm:mb-4"
+              className="hidden sm:block text-5xl lg:text-7xl font-extrabold text-white mb-3 sm:mb-4"
             >
               {title}
             </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="sm:hidden flex justify-center mb-4"
+            >
+              <div className="relative w-40 h-40">
+                <Image
+                  src="/images/falconpro-logo.png"
+                  alt="FalconPro"
+                  fill
+                  className="object-contain drop-shadow-2xl"
+                  priority
+                  sizes="160px"
+                />
+              </div>
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
