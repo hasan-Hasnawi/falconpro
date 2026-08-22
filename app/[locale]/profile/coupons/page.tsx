@@ -55,7 +55,7 @@ export default function CouponsPage() {
 
   useEffect(() => {
     if (user) {
-      fetch('/api/users/coupons')
+      fetch('/api/users/coupons', { cache: 'no-store' })
         .then((r) => r.json())
         .then((data) => setCoupons(data.coupons || []))
         .catch(console.error);

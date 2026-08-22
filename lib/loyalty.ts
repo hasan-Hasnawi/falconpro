@@ -1,5 +1,3 @@
-import { mockSettings, mockUsers, findMockUserById, addCouponToMockUser, updateMockUser } from './mock-data';
-
 export function generateCouponCode(prefix = 'FALCON') {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code = '';
@@ -29,7 +27,7 @@ export function buildLoyaltyCoupon(stage: any) {
     freeProductChoice: stage.freeProductChoice || { type: 'admin' },
     isUsed: false,
     usedAt: null,
-    earnedAt: new Date().toISOString(),
+    earnedAt: new Date(),
     expiresAt,
   };
 
@@ -39,79 +37,51 @@ export function buildLoyaltyCoupon(stage: any) {
 export async function processLoyaltyRewards({ userId, guestPhone, settings }: { userId?: string; guestPhone?: string; settings: any }) {
   const earnedCoupons: any[] = [];
 
-  try {
-    if (!userId && !guestPhone) return earnedCoupons;
+  if (!userId && !guestPhone) return earnedCoupons;
 
-    const stages = settings?.loyaltyStages || [];
-    if (!stages.length) return earnedCoupons;
+  const stages = settings?.loyaltyStages || [];
+  if (!stages.length) return earnedCoupons;
 
-    let user: any = null;
-    let userIdentifier = '';
+  let user: any = null;
 
-    // For simplicity, loyalty rewards only work for logged-in users in mock mode
-    // Guest users are not tracked across orders without account
+  if (userId) {
+    const { default: User } = await import('@/models/User');
+    const { default: dbConnect } = await import('@/lib/db');
+    await dbConnect();
+    user = await User.findById(userId);
+  }
+
+  if (!user) return earnedCoupons;
+
+  const ordersCount = (user.ordersCount || 0);
+  const cycleReset = settings?.loyaltyCycleReset;
+
+  const matchedStage = stages.find((s: any) => s.orderNumber === ordersCount);
+  if (matchedStage) {
+    const coupon = buildLoyaltyCoupon(matchedStage);
+    earnedCoupons.push({ coupon, stage: matchedStage });
+
     if (userId) {
-      try {
-        // Try to use dynamic import to avoid issues during build
-        const { default: User } = await import('@/models/User');
-        const { default: dbConnect } = await import('@/lib/db');
-        await dbConnect();
-        user = await User.findById(userId);
-      } catch {
-        // Mock fallback
-        user = findMockUserById(userId);
+      const { default: User } = await import('@/models/User');
+      if (!user.coupons) {
+        user.coupons = [];
       }
-      userIdentifier = userId;
-    }
-
-    if (!user) return earnedCoupons;
-
-    const ordersCount = (user.ordersCount || 0);
-    const cycleReset = settings?.loyaltyCycleReset;
-
-    // Check if current order count matches any stage
-    const matchedStage = stages.find((s: any) => s.orderNumber === ordersCount);
-    if (matchedStage) {
-      const coupon = buildLoyaltyCoupon(matchedStage);
-      earnedCoupons.push({ coupon, stage: matchedStage });
-
-      if (userId) {
-        try {
-          const { default: User } = await import('@/models/User');
-          // Only push if not already added (Mongoose document)
-          if (user.coupons && !user.coupons.find((c: any) => c.code === coupon.code)) {
-            user.coupons.push(coupon);
-            await user.save();
-          }
-        } catch {
-          // Mock fallback - avoid double push if already added
-          if (!user.coupons || !user.coupons.find((c: any) => c.code === coupon.code)) {
-            addCouponToMockUser(userIdentifier, coupon);
-          }
-        }
+      if (!user.coupons.find((c: any) => c.code === coupon.code)) {
+        user.coupons.push(coupon);
+        await user.save();
       }
     }
+  }
 
-    // Cycle reset
-    const maxStageNumber = Math.max(...stages.map((s: any) => s.orderNumber));
-    const resetAt = cycleReset || maxStageNumber + 1;
-    if (ordersCount >= resetAt) {
-      if (userId) {
-        try {
-          const { default: User } = await import('@/models/User');
-          user.ordersCount = 0;
-          user.loyaltyCycleCount = (user.loyaltyCycleCount || 0) + 1;
-          await user.save();
-        } catch {
-          updateMockUser(userIdentifier, {
-            ordersCount: 0,
-            loyaltyCycleCount: (user.loyaltyCycleCount || 0) + 1,
-          });
-        }
-      }
+  const maxStageNumber = Math.max(...stages.map((s: any) => s.orderNumber));
+  const resetAt = cycleReset || maxStageNumber + 1;
+  if (ordersCount >= resetAt) {
+    if (userId) {
+      const { default: User } = await import('@/models/User');
+      user.ordersCount = 0;
+      user.loyaltyCycleCount = (user.loyaltyCycleCount || 0) + 1;
+      await user.save();
     }
-  } catch (error) {
-    console.error('Loyalty processing error:', error);
   }
 
   return earnedCoupons;
