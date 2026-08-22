@@ -158,7 +158,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="sm:hidden flex justify-center mb-4"
+              className="sm:hidden flex flex-col items-center mb-4"
             >
               <div className="relative w-40 h-40">
                 <Image
@@ -170,13 +170,16 @@ export default function HeroSection() {
                   sizes="160px"
                 />
               </div>
+              <h1 className="text-4xl font-extrabold text-white mt-2">
+                {title}
+              </h1>
             </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-white/60 text-sm sm:text-base lg:text-lg max-w-xl mx-auto lg:mx-0 mb-6 sm:mb-8 leading-relaxed"
+              className="hidden sm:block text-white/60 text-base lg:text-lg max-w-xl mx-auto lg:mx-0 mb-6 sm:mb-8 leading-relaxed"
             >
               {description}
             </motion.p>
