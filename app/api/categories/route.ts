@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Category from '@/models/Category';
 import jwt from 'jsonwebtoken';
-import { mockCategories, deleteMockCategory } from '@/lib/mock-data';
+import { mockCategories } from '@/lib/mock-data';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'falconpro-secret-key-2024';
 
@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
       { headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' } }
     );
   } catch (error) {
+    console.error('Categories GET error:', error);
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type');
     const parent = searchParams.get('parent');
@@ -51,33 +52,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Name (AR) and type are required' }, { status: 400 });
     }
 
-    try {
-      await dbConnect();
-      const category = await Category.create({
-        name: { ar: name.ar, en: name.en || name.ar },
-        type,
-        parentCategory: parentCategory || null,
-        sortOrder: Number(sortOrder) || 0,
-        icon: icon || '',
-        image: image || '',
-      });
-      return NextResponse.json({ success: true, category });
-    } catch {
-      const newCategory = {
-        _id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-        name: { ar: name.ar, en: name.en || name.ar },
-        type,
-        parentCategory: parentCategory || null,
-        sortOrder: Number(sortOrder) || 0,
-        icon: icon || '',
-        image: image || '',
-        isActive: true,
-      };
-      mockCategories.push(newCategory);
-      return NextResponse.json({ success: true, category: newCategory });
-    }
+    await dbConnect();
+    const category = await Category.create({
+      name: { ar: name.ar, en: name.en || name.ar },
+      type,
+      parentCategory: parentCategory || null,
+      sortOrder: Number(sortOrder) || 0,
+      icon: icon || '',
+      image: image || '',
+    });
+    return NextResponse.json({ success: true, category });
   } catch (error) {
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    console.error('Category POST error:', error);
+    return NextResponse.json({ error: 'Failed to create category' }, { status: 500 });
   }
 }
 
@@ -91,20 +78,13 @@ export async function PUT(req: NextRequest) {
     const { _id, ...updates } = body;
     if (!_id) return NextResponse.json({ error: 'Missing _id' }, { status: 400 });
 
-    try {
-      await dbConnect();
-      const category = await Category.findByIdAndUpdate(_id, updates, { new: true });
-      return NextResponse.json({ success: true, category });
-    } catch {
-      const index = mockCategories.findIndex(c => c._id === _id);
-      if (index !== -1) {
-        mockCategories[index] = { ...mockCategories[index], ...updates };
-        return NextResponse.json({ success: true, category: mockCategories[index] });
-      }
-      return NextResponse.json({ error: 'Category not found' }, { status: 404 });
-    }
+    await dbConnect();
+    const category = await Category.findByIdAndUpdate(_id, updates, { new: true });
+    if (!category) return NextResponse.json({ error: 'Category not found' }, { status: 404 });
+    return NextResponse.json({ success: true, category });
   } catch (error) {
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    console.error('Category PUT error:', error);
+    return NextResponse.json({ error: 'Failed to update category' }, { status: 500 });
   }
 }
 
@@ -118,15 +98,11 @@ export async function DELETE(req: NextRequest) {
     const id = searchParams.get('id');
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-    try {
-      await dbConnect();
-      await Category.findByIdAndDelete(id);
-      return NextResponse.json({ success: true });
-    } catch {
-      deleteMockCategory(id);
-      return NextResponse.json({ success: true });
-    }
+    await dbConnect();
+    await Category.findByIdAndDelete(id);
+    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    console.error('Category DELETE error:', error);
+    return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 });
   }
 }

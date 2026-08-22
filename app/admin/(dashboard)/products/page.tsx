@@ -94,59 +94,84 @@ export default function AdminProducts() {
     : subCategories;
 
   const createProduct = async () => {
-    const res = await fetch('/api/products', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: { ar: form.nameAr, en: form.nameEn },
-        description: { ar: form.descAr, en: form.descEn },
-        price: Number(form.price),
-        stock: Number(form.stock),
-        category: form.category,
-        subcategory: form.subcategory || '',
-        images: form.images,
-        isOnSale: form.isOnSale,
-        salePrice: form.salePrice ? Number(form.salePrice) : null,
-        featured: form.featured,
-        isOutOfStock: form.isOutOfStock,
-        flavors: form.flavors,
-      }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      setShowForm(false);
-      resetForm();
-      loadData();
-    } else {
-      alert(data.error || 'حدث خطأ');
+    if (!form.nameAr.trim()) {
+      showToast('أدخل اسم المنتج بالعربي', 'error');
+      return;
+    }
+    if (!form.price || Number(form.price) <= 0) {
+      showToast('أدخل سعر صحيح', 'error');
+      return;
+    }
+    if (!form.category) {
+      showToast('اختر القسم', 'error');
+      return;
+    }
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: { ar: form.nameAr, en: form.nameEn },
+          description: { ar: form.descAr, en: form.descEn },
+          price: Number(form.price),
+          stock: Number(form.stock),
+          category: form.category,
+          subcategory: form.subcategory || '',
+          images: form.images,
+          isOnSale: form.isOnSale,
+          salePrice: form.salePrice ? Number(form.salePrice) : null,
+          featured: form.featured,
+          isOutOfStock: form.isOutOfStock,
+          flavors: form.flavors,
+        }),
+      });
+      if (res.ok) {
+        showToast('تم إضافة المنتج بنجاح', 'success');
+        setShowForm(false);
+        resetForm();
+        loadData();
+      } else {
+        const data = await res.json();
+        showToast(data.error || 'فشل إضافة المنتج', 'error');
+      }
+    } catch {
+      showToast('حدث خطأ أثناء إضافة المنتج', 'error');
     }
   };
 
   const updateProduct = async () => {
-    const res = await fetch('/api/products/manage', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        _id: editingProduct._id,
-        name: { ar: form.nameAr, en: form.nameEn },
-        description: { ar: form.descAr, en: form.descEn },
-        price: Number(form.price),
-        stock: Number(form.stock),
-        category: form.category,
-        subcategory: form.subcategory || '',
-        images: form.images,
-        isOnSale: form.isOnSale,
-        salePrice: form.salePrice ? Number(form.salePrice) : null,
-        featured: form.featured,
-        isOutOfStock: form.isOutOfStock,
-        flavors: form.flavors,
-      }),
-    });
-    if (res.ok) {
-      setShowForm(false);
-      setEditingProduct(null);
-      resetForm();
-      loadData();
+    try {
+      const res = await fetch('/api/products/manage', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          _id: editingProduct._id,
+          name: { ar: form.nameAr, en: form.nameEn },
+          description: { ar: form.descAr, en: form.descEn },
+          price: Number(form.price),
+          stock: Number(form.stock),
+          category: form.category,
+          subcategory: form.subcategory || '',
+          images: form.images,
+          isOnSale: form.isOnSale,
+          salePrice: form.salePrice ? Number(form.salePrice) : null,
+          featured: form.featured,
+          isOutOfStock: form.isOutOfStock,
+          flavors: form.flavors,
+        }),
+      });
+      if (res.ok) {
+        showToast('تم تحديث المنتج بنجاح', 'success');
+        setShowForm(false);
+        setEditingProduct(null);
+        resetForm();
+        loadData();
+      } else {
+        const data = await res.json();
+        showToast(data.error || 'فشل تحديث المنتج', 'error');
+      }
+    } catch {
+      showToast('حدث خطأ أثناء تحديث المنتج', 'error');
     }
   };
 
