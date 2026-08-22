@@ -73,8 +73,8 @@ export default function AdminProducts() {
 
   const loadData = () => {
     Promise.all([
-      fetch('/api/products').then((r) => r.json()),
-      fetch('/api/categories').then((r) => r.json()),
+      fetch('/api/products', { cache: 'no-store' }).then((r) => r.json()),
+      fetch('/api/categories', { cache: 'no-store' }).then((r) => r.json()),
     ])
       .then(([prods, cats]) => {
         setProducts(prods.products || []);
@@ -110,6 +110,7 @@ export default function AdminProducts() {
       const res = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
         body: JSON.stringify({
           name: { ar: form.nameAr, en: form.nameEn },
           description: { ar: form.descAr, en: form.descEn },
@@ -144,6 +145,7 @@ export default function AdminProducts() {
       const res = await fetch('/api/products/manage', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
         body: JSON.stringify({
           _id: editingProduct._id,
           name: { ar: form.nameAr, en: form.nameEn },
@@ -179,6 +181,7 @@ export default function AdminProducts() {
     const res = await fetch('/api/products/manage', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
       body: JSON.stringify({
         _id: product._id,
         isOutOfStock: !product.isOutOfStock,
@@ -201,7 +204,7 @@ export default function AdminProducts() {
     if (!selectedProduct) return;
     setDeleteLoading(true);
     try {
-      const res = await fetch(`/api/products/manage?id=${selectedProduct._id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/products/manage?id=${selectedProduct._id}`, { method: 'DELETE', cache: 'no-store' });
       if (res.ok) {
         showToast('تم حذف المنتج بنجاح', 'success');
         loadData();

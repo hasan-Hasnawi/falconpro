@@ -38,7 +38,7 @@ export default function AdminCategories() {
   }, []);
 
   const loadData = () => {
-    fetch('/api/categories')
+    fetch('/api/categories', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => {
         setCategories(data.categories || []);
@@ -56,6 +56,7 @@ export default function AdminCategories() {
       const res = await fetch('/api/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
         body: JSON.stringify({
           name: { ar: form.nameAr, en: form.nameEn },
           type: form.type,
@@ -88,7 +89,7 @@ export default function AdminCategories() {
     if (!selectedCategory) return;
     setDeleteLoading(true);
     try {
-      const res = await fetch(`/api/categories?id=${selectedCategory._id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/categories?id=${selectedCategory._id}`, { method: 'DELETE', cache: 'no-store' });
       if (res.ok) {
         showToast('تم حذف القسم بنجاح', 'success');
         loadData();

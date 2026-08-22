@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     const categories = await Category.find(query).sort({ sortOrder: 1, createdAt: -1 });
     return NextResponse.json(
       { categories },
-      { headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' } }
+      { headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate' } }
     );
   } catch (error) {
     console.error('Categories GET error:', error);
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       { categories },
-      { headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' } }
+      { headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate' } }
     );
   }
 }

@@ -13,12 +13,12 @@ export async function GET(req: NextRequest) {
       }
       return NextResponse.json(
         { settings },
-        { headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' } }
+        { headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate' } }
       );
     } catch {
       return NextResponse.json(
         { settings: mockSettings },
-        { headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' } }
+        { headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate' } }
       );
     }
   } catch (error) {

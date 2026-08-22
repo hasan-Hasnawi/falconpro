@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     const products = await Product.find(query).sort({ createdAt: -1 });
     return NextResponse.json(
       { products },
-      { headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' } }
+      { headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate' } }
     );
   } catch (error) {
     console.error('Products GET error:', error);
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       { products },
-      { headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' } }
+      { headers: { 'Cache-Control': 'private, no-cache, no-store, must-revalidate' } }
     );
   }
 }
