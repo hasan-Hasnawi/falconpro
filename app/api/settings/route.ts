@@ -36,7 +36,9 @@ export async function PUT(req: NextRequest) {
       if (!settings) {
         settings = await Settings.create(body);
       } else {
-        Object.assign(settings, body);
+        for (const [key, value] of Object.entries(body)) {
+          settings.set(key, value);
+        }
         settings.updatedAt = new Date();
         await settings.save();
       }
