@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, coupon, couponsCount: user.coupons.length });
   } catch (error) {
     console.error('Add coupon error:', error);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: 'Server error', details: message }, { status: 500 });
   }
 }
