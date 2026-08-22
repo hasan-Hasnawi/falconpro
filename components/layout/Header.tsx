@@ -37,7 +37,7 @@ export default function Header() {
       className="fixed top-0 left-0 right-0 z-50 bg-falcon-blue border-b border-white/10"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="relative flex items-center justify-between h-20 sm:h-24">
+        <div className="flex items-center justify-between h-20 sm:h-24">
           {/* Mobile: Text name in corner */}
           <Link href={`/${locale}`} className="flex items-center shrink-0 sm:hidden">
             <span className="text-white font-bold text-lg">
@@ -61,19 +61,6 @@ export default function Header() {
               Falcon<span className="text-falcon-gold">Pro</span>
             </span>
           </Link>
-          <Link href={`/${locale}`} className="sm:hidden absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
-            <div className="relative w-12 h-12">
-              <Image
-                src="/images/falconpro-logo.png"
-                alt="FalconPro"
-                fill
-                className="object-contain"
-                sizes="48px"
-                priority
-              />
-            </div>
-          </Link>
-
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-6">
             <Link href={`/${locale}`} className="text-white/80 hover:text-falcon-gold transition-colors text-sm font-medium">
