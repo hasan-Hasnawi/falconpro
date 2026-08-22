@@ -12,7 +12,7 @@ const OrderSchema = new mongoose.Schema({
   },
   items: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-    name: { type: String, required: true },
+    name: { type: mongoose.Schema.Types.Mixed, required: true },
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
     image: { type: String },
