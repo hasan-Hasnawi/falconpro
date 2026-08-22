@@ -12,15 +12,24 @@ export async function sendOrderNotification(order: any) {
   const orderUrl = `${appUrl}/admin/orders/${orderId}`;
   const isLocalhost = appUrl.includes('localhost') || appUrl.includes('127.0.0.1');
 
+  const phone = order.phone?.replace(/^0/, '+964') || '';
+  const whatsappUrl = phone ? `https://wa.me/${phone}` : '';
+
   const itemsText = order.items
     .map(
-      (item: any, i: number) =>
-        `${i + 1}. ${item.name} × ${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`
+      (item: any, i: number) => {
+        const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
+        return `${i + 1}. ${name} × ${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
+      }
     )
     .join('\n');
 
   const discountText = order.discountAmount
     ? `🏷️ الخصم: -${order.discountAmount.toLocaleString()} د.ع\n`
+    : '';
+
+  const whatsappText = whatsappUrl
+    ? `💬 تاكيد الطلب عبر واتساب:\n${whatsappUrl}\n`
     : '';
 
   const message = `
@@ -37,13 +46,32 @@ ${itemsText}
 💰 المجموع: ${order.total.toLocaleString()} د.ع
 ${discountText}💵 النهائي: *${order.finalTotal.toLocaleString()} د.ع*
 
-🔗 رابط الطلب:
+${whatsappText}🔗 رابط الطلب:
 ${orderUrl}
 
 🕐 ${new Date(order.createdAt || Date.now()).toLocaleString('ar-IQ')}
   `.trim();
 
   try {
+    const keyboard: any[][][] = [];
+
+    const mainRow: any[] = [];
+    if (!isLocalhost) {
+      mainRow.push({
+        text: '👁️ عرض الطلب',
+        url: orderUrl,
+      });
+    }
+    if (whatsappUrl) {
+      mainRow.push({
+        text: '💬 تاكيد عبر واتساب',
+        url: whatsappUrl,
+      });
+    }
+    if (mainRow.length > 0) {
+      keyboard.push(mainRow);
+    }
+
     const payload: any = {
       chat_id: chatId,
       text: message,
@@ -51,17 +79,9 @@ ${orderUrl}
       disable_web_page_preview: true,
     };
 
-    // Telegram does not allow localhost URLs in inline keyboard buttons
-    if (!isLocalhost) {
+    if (keyboard.length > 0) {
       payload.reply_markup = {
-        inline_keyboard: [
-          [
-            {
-              text: '👁️ عرض الطلب',
-              url: orderUrl,
-            },
-          ],
-        ],
+        inline_keyboard: keyboard,
       };
     }
 
