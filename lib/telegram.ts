@@ -51,10 +51,10 @@ export async function sendOrderNotification(order: any) {
     `🕐 ${new Date(order.createdAt || Date.now()).toLocaleString('ar-IQ')}`,
   ].filter(Boolean).join('\n');
 
-  const keyboard: any[][] = [];
+  const row: any[] = [];
 
   if (!isLocalhost) {
-    keyboard.push({
+    row.push({
       text: '👁 View Order',
       url: orderUrl,
     });
@@ -87,7 +87,7 @@ export async function sendOrderNotification(order: any) {
       `Confirm order?`,
     ].filter(Boolean).join('\n'));
 
-    keyboard.push({
+    row.push({
       text: '💬 Confirm via WhatsApp',
       url: `https://wa.me/${phone}?text=${waText}`,
     });
@@ -100,9 +100,9 @@ export async function sendOrderNotification(order: any) {
       disable_web_page_preview: true,
     };
 
-    if (keyboard.length > 0) {
+    if (row.length > 0) {
       payload.reply_markup = {
-        inline_keyboard: [keyboard],
+        inline_keyboard: [row],
       };
     }
 
