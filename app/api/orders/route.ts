@@ -80,6 +80,31 @@ export async function POST(req: NextRequest) {
       address,
     });
 
+    // Decrement stock for each item
+    for (const item of items) {
+      try {
+        const product = await Product.findById(item.productId);
+        if (product) {
+          if (item.flavor) {
+            const flavor = product.flavors?.find((f: any) =>
+              f.name.ar === item.flavor.name?.ar && f.name.en === item.flavor.name?.en
+            );
+            if (flavor) {
+              flavor.stock = Math.max(0, (flavor.stock || 0) - item.quantity);
+            }
+          } else {
+            product.stock = Math.max(0, (product.stock || 0) - item.quantity);
+          }
+          if (product.stock <= 0 && !item.flavor) {
+            product.isOutOfStock = true;
+          }
+          await product.save();
+        }
+      } catch (stockError) {
+        console.error('Stock decrement error:', stockError);
+      }
+    }
+
     // Increment orders count and process loyalty
     let earnedCoupons: any[] = [];
     if (userId) {
