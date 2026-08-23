@@ -13,110 +13,96 @@ export async function sendOrderNotification(order: any) {
   const isLocalhost = appUrl.includes('localhost') || appUrl.includes('127.0.0.1');
 
   const phone = order.phone?.replace(/^0/, '+964') || '';
-
   const shortOrderId = orderId.toString().slice(-6);
 
-  const whatsappItems = order.items
-    .map((item: any) => {
-      const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-      const itemTotal = (item.price * item.quantity).toLocaleString();
-      return `\u2022 ${name} \u00D7 ${item.quantity} = ${itemTotal} د.ع`;
-    })
-    .join('%0A');
-
-  const discountLine = order.discountAmount
-    ? `%0A\uD83C\uDF9F\uFE0F الخصم: -${order.discountAmount.toLocaleString()} د.ع`
-    : '';
-
-  const deliveryLine = order.deliveryFee
-    ? `%0A\uD83D\uDE9A رسوم التوصيل: ${order.deliveryFee.toLocaleString()} د.ع`
-    : '';
-
-  const whatsappMessage =
-    `%F0%9F%9B%92 طلب جديد من FalconPro` +
-    `%0A%0A` +
-    `%F0%9F%86%94 رقم الطلب: %23${shortOrderId}` +
-    `%0A%F0%9F%93%9E الهاتف: ${order.phone}` +
-    `%0A%F0%9F%93%8D المحافظة: ${order.province}` +
-    `%0A%F0%9F%8F%A0 العنوان: ${order.address}` +
-    `%0A%0A` +
-    `%F0%9F%93%A6 المنتجات:%0A${whatsappItems}` +
-    `%0A%0A` +
-    `%F0%9F%92%B0 المجموع: ${order.total.toLocaleString()} د.ع` +
-    `${discountLine}` +
-    `${deliveryLine}` +
-    `%0A%F0%9F%92%B5 النهائي: ${order.finalTotal.toLocaleString()} د.ع` +
-    `%0A%0A` +
-    `هل تريد تاكيد الطلب؟`;
-
-  const whatsappUrl = phone ? `https://wa.me/${phone}?text=${whatsappMessage}` : '';
-
   const itemsText = order.items
-    .map(
-      (item: any, i: number) => {
-        const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-        return `${i + 1}. ${name} × ${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
-      }
-    )
+    .map((item: any, i: number) => {
+      const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
+      return `${i + 1}. ${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} IQD`;
+    })
     .join('\n');
 
   const discountText = order.discountAmount
-    ? `🏷️ الخصم: -${order.discountAmount.toLocaleString()} د.ع\n`
+    ? `\nDiscount: -${order.discountAmount.toLocaleString()} IQD`
     : '';
 
-  const message = `
-🛒 *طلب جديد في FalconPro!*
+  const deliveryText = order.deliveryFee
+    ? `\nDelivery: ${order.deliveryFee.toLocaleString()} IQD`
+    : '';
 
-🆔 رقم الطلب: #${orderId.toString().slice(-6)}
-📞 الهاتف: ${order.phone}
-📍 المحافظة: ${order.province}
-🏠 العنوان: ${order.address}
+  const message = [
+    `🛒 New order in FalconPro!`,
+    ``,
+    `🆔 Order: #${shortOrderId}`,
+    `📞 Phone: ${order.phone}`,
+    `📍 Province: ${order.province}`,
+    `🏠 Address: ${order.address}`,
+    ``,
+    `📦 Products:`,
+    itemsText,
+    ``,
+    `💰 Total: ${order.total.toLocaleString()} IQD`,
+    discountText,
+    deliveryText,
+    `💵 Final: ${order.finalTotal.toLocaleString()} IQD`,
+    ``,
+    `🔗 Order: ${orderUrl}`,
+    ``,
+    `🕐 ${new Date(order.createdAt || Date.now()).toLocaleString('ar-IQ')}`,
+  ].filter(Boolean).join('\n');
 
-📦 المنتجات:
-${itemsText}
+  const keyboard: any[][] = [];
 
-💰 المجموع: ${order.total.toLocaleString()} د.ع
-${discountText}💵 النهائي: *${order.finalTotal.toLocaleString()} د.ع*
+  if (!isLocalhost) {
+    keyboard.push({
+      text: '👁 View Order',
+      url: orderUrl,
+    });
+  }
 
-💬 تاكيد الطلب عبر واتساب:
-${whatsappUrl}
+  if (phone) {
+    const whatsappItems = order.items.map((item: any) => {
+      const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
+      return `${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} IQD`;
+    }).join('\n');
 
-🔗 رابط الطلب:
-${orderUrl}
+    const discountLine = order.discountAmount ? `\nDiscount: -${order.discountAmount.toLocaleString()} IQD` : '';
+    const deliveryLine = order.deliveryFee ? `\nDelivery: ${order.deliveryFee.toLocaleString()} IQD` : '';
 
-🕐 ${new Date(order.createdAt || Date.now()).toLocaleString('ar-IQ')}
-  `.trim();
+    const waText = encodeURIComponent([
+      `Order #${shortOrderId}`,
+      ``,
+      `Phone: ${order.phone}`,
+      `Province: ${order.province}`,
+      `Address: ${order.address}`,
+      ``,
+      `Products:`,
+      whatsappItems,
+      ``,
+      `Total: ${order.total.toLocaleString()} IQD`,
+      discountLine,
+      deliveryLine,
+      `Final: ${order.finalTotal.toLocaleString()} IQD`,
+      ``,
+      `Confirm order?`,
+    ].filter(Boolean).join('\n'));
+
+    keyboard.push({
+      text: '💬 Confirm via WhatsApp',
+      url: `https://wa.me/${phone}?text=${waText}`,
+    });
+  }
 
   try {
-    const keyboard: any[][][] = [];
-
-    const mainRow: any[] = [];
-    if (!isLocalhost) {
-      mainRow.push({
-        text: '👁️ عرض الطلب',
-        url: orderUrl,
-      });
-    }
-    if (whatsappUrl) {
-      mainRow.push({
-        text: '💬 تاكيد عبر واتساب',
-        url: whatsappUrl,
-      });
-    }
-    if (mainRow.length > 0) {
-      keyboard.push(mainRow);
-    }
-
     const payload: any = {
       chat_id: chatId,
       text: message,
-      parse_mode: 'Markdown',
       disable_web_page_preview: true,
     };
 
     if (keyboard.length > 0) {
       payload.reply_markup = {
-        inline_keyboard: keyboard,
+        inline_keyboard: [keyboard],
       };
     }
 
