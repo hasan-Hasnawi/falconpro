@@ -15,21 +15,39 @@ export async function sendOrderNotification(order: any) {
   const phone = order.phone?.replace(/^0/, '+964') || '';
 
   const shortOrderId = orderId.toString().slice(-6);
+
   const whatsappItems = order.items
     .map((item: any) => {
       const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-      return `${name} × ${item.quantity}`;
+      const itemTotal = (item.price * item.quantity).toLocaleString();
+      return `\u2022 ${name} \u00D7 ${item.quantity} = ${itemTotal} د.ع`;
     })
-    .join(' , ');
+    .join('%0A');
 
-  const whatsappMessage = encodeURIComponent(
-    `مرحباً من FalconPro\n` +
-    `طلبك رقم #${shortOrderId} جاهز\n` +
-    `المنتجات: ${whatsappItems}\n` +
-    `الإجمالي: ${order.finalTotal.toLocaleString()} د.ع\n` +
-    `العنوان: ${order.province} - ${order.address}\n` +
-    `هل تريد تاكيد الطلب؟`
-  );
+  const discountLine = order.discountAmount
+    ? `%0A\uD83C\uDF9F\uFE0F الخصم: -${order.discountAmount.toLocaleString()} د.ع`
+    : '';
+
+  const deliveryLine = order.deliveryFee
+    ? `%0A\uD83D\uDE9A رسوم التوصيل: ${order.deliveryFee.toLocaleString()} د.ع`
+    : '';
+
+  const whatsappMessage =
+    `%F0%9F%9B%92 طلب جديد من FalconPro` +
+    `%0A%0A` +
+    `%F0%9F%86%94 رقم الطلب: %23${shortOrderId}` +
+    `%0A%F0%9F%93%9E الهاتف: ${order.phone}` +
+    `%0A%F0%9F%93%8D المحافظة: ${order.province}` +
+    `%0A%F0%9F%8F%A0 العنوان: ${order.address}` +
+    `%0A%0A` +
+    `%F0%9F%93%A6 المنتجات:%0A${whatsappItems}` +
+    `%0A%0A` +
+    `%F0%9F%92%B0 المجموع: ${order.total.toLocaleString()} د.ع` +
+    `${discountLine}` +
+    `${deliveryLine}` +
+    `%0A%F0%9F%92%B5 النهائي: ${order.finalTotal.toLocaleString()} د.ع` +
+    `%0A%0A` +
+    `هل تريد تاكيد الطلب؟`;
 
   const whatsappUrl = phone ? `https://wa.me/${phone}?text=${whatsappMessage}` : '';
 
@@ -46,10 +64,6 @@ export async function sendOrderNotification(order: any) {
     ? `🏷️ الخصم: -${order.discountAmount.toLocaleString()} د.ع\n`
     : '';
 
-  const whatsappText = whatsappUrl
-    ? `💬 تاكيد الطلب عبر واتساب:\n${whatsappUrl}\n`
-    : '';
-
   const message = `
 🛒 *طلب جديد في FalconPro!*
 
@@ -64,7 +78,10 @@ ${itemsText}
 💰 المجموع: ${order.total.toLocaleString()} د.ع
 ${discountText}💵 النهائي: *${order.finalTotal.toLocaleString()} د.ع*
 
-${whatsappText}🔗 رابط الطلب:
+💬 تاكيد الطلب عبر واتساب:
+${whatsappUrl}
+
+🔗 رابط الطلب:
 ${orderUrl}
 
 🕐 ${new Date(order.createdAt || Date.now()).toLocaleString('ar-IQ')}
