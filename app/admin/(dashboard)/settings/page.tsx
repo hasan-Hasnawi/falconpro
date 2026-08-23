@@ -13,6 +13,10 @@ export default function AdminSettings() {
   const [sitePhone, setSitePhone] = useState('');
   const [siteInstagram, setSiteInstagram] = useState('');
   const [siteDescription, setSiteDescription] = useState('');
+  const [packagesTitleAr, setPackagesTitleAr] = useState('عروض البكجات');
+  const [packagesTitleEn, setPackagesTitleEn] = useState('Package Deals');
+  const [featuredTitleAr, setFeaturedTitleAr] = useState('منتجات مميزة');
+  const [featuredTitleEn, setFeaturedTitleEn] = useState('Featured Products');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -29,6 +33,10 @@ export default function AdminSettings() {
           setSitePhone(s.sitePhone || '0776 666 1816');
           setSiteInstagram(s.siteInstagram || '@199fal');
           setSiteDescription(s.siteDescription || '');
+          setPackagesTitleAr(s.packagesTitleAr || 'عروض البكجات');
+          setPackagesTitleEn(s.packagesTitleEn || 'Package Deals');
+          setFeaturedTitleAr(s.featuredTitleAr || 'منتجات مميزة');
+          setFeaturedTitleEn(s.featuredTitleEn || 'Featured Products');
         }
         setLoading(false);
       })
@@ -48,6 +56,10 @@ export default function AdminSettings() {
         sitePhone,
         siteInstagram,
         siteDescription,
+        packagesTitleAr,
+        packagesTitleEn,
+        featuredTitleAr,
+        featuredTitleEn,
       }),
     });
     if (res.ok) {
@@ -199,6 +211,55 @@ export default function AdminSettings() {
             </h2>
             <p className="text-gray-400 text-sm">أضف روابط الصور لعرض كاروسيل في الخلفية. يمكنك إضافة أكثر من صورة.</p>
             <HeroImagesEditor />
+          </div>
+
+          <div className="border-t border-gray-100" />
+
+          {/* Section Titles */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-falcon-dark flex items-center gap-2">
+              <FileText className="w-6 h-6 text-falcon-blue" />
+              عناوين أقسام الصفحة الرئيسية
+            </h2>
+            <p className="text-gray-400 text-sm">تعديل عناوين الأقسام التي تظهر في الصفحة الرئيسية.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-gray-600 text-sm mb-2 block font-medium">عنوان عروض البكجات (عربي)</label>
+                <input
+                  type="text"
+                  value={packagesTitleAr}
+                  onChange={(e) => setPackagesTitleAr(e.target.value)}
+                  className="input-field"
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 text-sm mb-2 block font-medium">عنوان عروض البكجات (إنجليزي)</label>
+                <input
+                  type="text"
+                  value={packagesTitleEn}
+                  onChange={(e) => setPackagesTitleEn(e.target.value)}
+                  className="input-field"
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 text-sm mb-2 block font-medium">عنوان المنتجات المميزة (عربي)</label>
+                <input
+                  type="text"
+                  value={featuredTitleAr}
+                  onChange={(e) => setFeaturedTitleAr(e.target.value)}
+                  className="input-field"
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 text-sm mb-2 block font-medium">عنوان المنتجات المميزة (إنجليزي)</label>
+                <input
+                  type="text"
+                  value={featuredTitleEn}
+                  onChange={(e) => setFeaturedTitleEn(e.target.value)}
+                  className="input-field"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="border-t border-gray-100" />

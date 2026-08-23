@@ -19,17 +19,26 @@ export default function PackagesSection() {
   const params = useParams();
   const locale = (Array.isArray(params.locale) ? params.locale[0] : params.locale) || 'ar';
   const [packages, setPackages] = useState<PackageItem[]>([]);
+  const [packagesTitle, setPackagesTitle] = useState(locale === 'ar' ? 'عروض البكجات' : 'Package Deals');
 
   useEffect(() => {
     fetch('/api/packages')
       .then((r) => r.json())
       .then((data) => setPackages(data.packages || []))
       .catch(console.error);
-  }, []);
+
+    fetch('/api/settings', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        const s = data.settings;
+        if (s) {
+          setPackagesTitle(locale === 'ar' ? (s.packagesTitleAr || 'عروض البكجات') : (s.packagesTitleEn || 'Package Deals'));
+        }
+      })
+      .catch(console.error);
+  }, [locale]);
 
   if (packages.length === 0) return null;
-
-  const title = locale === 'ar' ? 'عروض البكجات' : 'Package Deals';
 
   return (
     <section className="py-20 px-4 sm:px-6 bg-white">
@@ -40,7 +49,7 @@ export default function PackagesSection() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-falcon-dark mb-4">{title}</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-falcon-dark mb-4">{packagesTitle}</h2>
           <div className="w-24 h-1 bg-falcon-gold mx-auto rounded-full" />
         </motion.div>
 

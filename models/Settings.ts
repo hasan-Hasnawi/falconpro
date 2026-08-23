@@ -88,6 +88,10 @@ const SettingsSchema = new mongoose.Schema({
   heroCtaAr: { type: String, default: 'Shop Now' },
   heroCtaEn: { type: String, default: 'Shop Now' },
   heroImages: [{ type: String }],
+  packagesTitleAr: { type: String, default: 'عروض البكجات' },
+  packagesTitleEn: { type: String, default: 'Package Deals' },
+  featuredTitleAr: { type: String, default: 'منتجات مميزة' },
+  featuredTitleEn: { type: String, default: 'Featured Products' },
   updatedAt: {
     type: Date,
     default: Date.now,

@@ -20,15 +20,24 @@ export default function FeaturedProducts() {
   const locale = (Array.isArray(params.locale) ? params.locale[0] : params.locale) || 'ar';
   const t = useTranslations('products');
   const [products, setProducts] = useState<Product[]>([]);
+  const [featuredTitle, setFeaturedTitle] = useState(locale === 'ar' ? 'منتجات مميزة' : 'Featured Products');
 
   useEffect(() => {
     fetch('/api/products?featured=true', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => setProducts(data.products || []))
       .catch(console.error);
-  }, []);
 
-  const title = locale === 'ar' ? 'منتجات مميزة' : 'Featured Products';
+    fetch('/api/settings', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        const s = data.settings;
+        if (s) {
+          setFeaturedTitle(locale === 'ar' ? (s.featuredTitleAr || 'منتجات مميزة') : (s.featuredTitleEn || 'Featured Products'));
+        }
+      })
+      .catch(console.error);
+  }, [locale]);
 
   return (
     <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-white to-falcon-bluePale/30">
@@ -39,7 +48,7 @@ export default function FeaturedProducts() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-falcon-dark mb-4">{title}</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-falcon-dark mb-4">{featuredTitle}</h2>
           <div className="w-24 h-1 bg-falcon-gold mx-auto rounded-full" />
         </motion.div>
 
