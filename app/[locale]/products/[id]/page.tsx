@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShoppingCart, Check, Truck, Shield, RefreshCcw, AlertCircle } from 'lucide-react';
+import { ArrowRight, ShoppingCart, Check, Truck, Shield, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useCart } from '@/components/cart/CartContext';
 
@@ -217,10 +217,6 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-2 text-gray-500">
                 <Shield className="w-5 h-5 text-falcon-blue" />
                 <span className="text-sm">أصلي 100%</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-500">
-                <RefreshCcw className="w-5 h-5 text-falcon-blue" />
-                <span className="text-sm">استبدال خلال 7 أيام</span>
               </div>
             </div>
 
