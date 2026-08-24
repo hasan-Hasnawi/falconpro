@@ -18,66 +18,66 @@ export async function sendOrderNotification(order: any) {
   const itemsText = order.items
     .map((item: any, i: number) => {
       const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-      return `${i + 1}. ${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} IQD`;
+      return `${i + 1}. ${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
     })
     .join('\n');
 
   const discountText = order.discountAmount
-    ? `\nDiscount: -${order.discountAmount.toLocaleString()} IQD`
+    ? `\nالخصم: -${order.discountAmount.toLocaleString()} د.ع`
     : '';
 
   const deliveryText = order.deliveryFee
-    ? `\nDelivery: ${order.deliveryFee.toLocaleString()} IQD`
+    ? `\nالتوصيل: ${order.deliveryFee.toLocaleString()} د.ع`
     : '';
 
   const confirmationItems = order.items.map((item: any) => {
     const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-    return `${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} IQD`;
+    return `${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
   }).join('\n');
 
   const confirmationDiscount = order.discountAmount
-    ? `\nDiscount: -${order.discountAmount.toLocaleString()} IQD`
+    ? `\nالخصم: -${order.discountAmount.toLocaleString()} د.ع`
     : '';
 
   const confirmationDelivery = order.deliveryFee
-    ? `\nDelivery: ${order.deliveryFee.toLocaleString()} IQD`
+    ? `\nالتوصيل: ${order.deliveryFee.toLocaleString()} د.ع`
     : '';
 
   const confirmationText = [
-    `Order #${shortOrderId}`,
+    `رقم الطلب: #${shortOrderId}`,
     ``,
-    `Phone: ${order.phone}`,
-    `Province: ${order.province}`,
-    `Address: ${order.address}`,
+    `الهاتف: ${order.phone}`,
+    `المحافظة: ${order.province}`,
+    `العنوان: ${order.address}`,
     ``,
-    `Products:`,
+    `المنتجات:`,
     confirmationItems,
     ``,
-    `Total: ${order.total.toLocaleString()} IQD`,
+    `المجموع: ${order.total.toLocaleString()} د.ع`,
     confirmationDiscount,
     confirmationDelivery,
-    `Final: ${order.finalTotal.toLocaleString()} IQD`,
+    `النهائي: ${order.finalTotal.toLocaleString()} د.ع`,
   ].filter(Boolean).join('\n');
 
   const message = [
-    `🛒 New order in FalconPro!`,
+    `🛒 طلب جديد في FalconPro!`,
     ``,
-    `🆔 Order: #${shortOrderId}`,
-    `📞 Phone: ${order.phone}`,
-    `📍 Province: ${order.province}`,
-    `🏠 Address: ${order.address}`,
+    `🆔 الطلب: #${shortOrderId}`,
+    `📞 الهاتف: ${order.phone}`,
+    `📍 المحافظة: ${order.province}`,
+    `🏠 العنوان: ${order.address}`,
     ``,
-    `📦 Products:`,
+    `📦 المنتجات:`,
     itemsText,
     ``,
-    `💰 Total: ${order.total.toLocaleString()} IQD`,
+    `💰 المجموع: ${order.total.toLocaleString()} د.ع`,
     discountText,
     deliveryText,
-    `💵 Final: ${order.finalTotal.toLocaleString()} IQD`,
+    `💵 النهائي: ${order.finalTotal.toLocaleString()} د.ع`,
     ``,
-    `🔗 Order: ${orderUrl}`,
+    `🔗 الطلب: ${orderUrl}`,
     ``,
-    `📋 Copy confirmation message:`,
+    `📋 نسخ رسالة التأكيد:`,
     `<pre>${confirmationText}</pre>`,
     ``,
     `🕐 ${new Date(order.createdAt || Date.now()).toLocaleString('ar-IQ')}`,
@@ -87,14 +87,14 @@ export async function sendOrderNotification(order: any) {
 
   if (!isLocalhost) {
     row.push({
-      text: '👁 View Order',
+      text: '👁 عرض الطلب',
       url: orderUrl,
     });
   }
 
   if (phone) {
     row.push({
-      text: '💬 Confirm via WhatsApp',
+      text: '💬 تأكيد عبر واتساب',
       url: `https://wa.me/${phone}`,
     });
   }
