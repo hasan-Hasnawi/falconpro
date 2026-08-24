@@ -30,6 +30,35 @@ export async function sendOrderNotification(order: any) {
     ? `\nDelivery: ${order.deliveryFee.toLocaleString()} IQD`
     : '';
 
+  const confirmationItems = order.items.map((item: any) => {
+    const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
+    return `${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} IQD`;
+  }).join('\n');
+
+  const confirmationDiscount = order.discountAmount
+    ? `\nDiscount: -${order.discountAmount.toLocaleString()} IQD`
+    : '';
+
+  const confirmationDelivery = order.deliveryFee
+    ? `\nDelivery: ${order.deliveryFee.toLocaleString()} IQD`
+    : '';
+
+  const confirmationText = [
+    `Order #${shortOrderId}`,
+    ``,
+    `Phone: ${order.phone}`,
+    `Province: ${order.province}`,
+    `Address: ${order.address}`,
+    ``,
+    `Products:`,
+    confirmationItems,
+    ``,
+    `Total: ${order.total.toLocaleString()} IQD`,
+    confirmationDiscount,
+    confirmationDelivery,
+    `Final: ${order.finalTotal.toLocaleString()} IQD`,
+  ].filter(Boolean).join('\n');
+
   const message = [
     `🛒 New order in FalconPro!`,
     ``,
@@ -48,6 +77,9 @@ export async function sendOrderNotification(order: any) {
     ``,
     `🔗 Order: ${orderUrl}`,
     ``,
+    `📋 Copy confirmation message:`,
+    `<pre>${confirmationText}</pre>`,
+    ``,
     `🕐 ${new Date(order.createdAt || Date.now()).toLocaleString('ar-IQ')}`,
   ].filter(Boolean).join('\n');
 
@@ -61,35 +93,9 @@ export async function sendOrderNotification(order: any) {
   }
 
   if (phone) {
-    const whatsappItems = order.items.map((item: any) => {
-      const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-      return `${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} IQD`;
-    }).join('\n');
-
-    const discountLine = order.discountAmount ? `\nDiscount: -${order.discountAmount.toLocaleString()} IQD` : '';
-    const deliveryLine = order.deliveryFee ? `\nDelivery: ${order.deliveryFee.toLocaleString()} IQD` : '';
-
-    const waText = encodeURIComponent([
-      `Order #${shortOrderId}`,
-      ``,
-      `Phone: ${order.phone}`,
-      `Province: ${order.province}`,
-      `Address: ${order.address}`,
-      ``,
-      `Products:`,
-      whatsappItems,
-      ``,
-      `Total: ${order.total.toLocaleString()} IQD`,
-      discountLine,
-      deliveryLine,
-      `Final: ${order.finalTotal.toLocaleString()} IQD`,
-      ``,
-      `Confirm order?`,
-    ].filter(Boolean).join('\n'));
-
     row.push({
       text: '💬 Confirm via WhatsApp',
-      url: `https://wa.me/${phone}?text=${waText}`,
+      url: `https://wa.me/${phone}`,
     });
   }
 
