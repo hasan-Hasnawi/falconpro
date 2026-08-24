@@ -1,3 +1,7 @@
+function escapeHtml(text: string) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 export async function sendOrderNotification(order: any) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
@@ -18,7 +22,7 @@ export async function sendOrderNotification(order: any) {
   const itemsText = order.items
     .map((item: any, i: number) => {
       const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-      return `${i + 1}. ${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
+      return `${i + 1}. ${escapeHtml(name)} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
     })
     .join('\n');
 
@@ -32,7 +36,7 @@ export async function sendOrderNotification(order: any) {
 
   const confirmationItems = order.items.map((item: any) => {
     const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-    return `${name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
+    return `${escapeHtml(name)} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
   }).join('\n');
 
   const confirmationDiscount = order.discountAmount
@@ -46,9 +50,9 @@ export async function sendOrderNotification(order: any) {
   const confirmationText = [
     `رقم الطلب: #${shortOrderId}`,
     ``,
-    `الهاتف: ${order.phone}`,
-    `المحافظة: ${order.province}`,
-    `العنوان: ${order.address}`,
+    `الهاتف: ${escapeHtml(order.phone || '')}`,
+    `المحافظة: ${escapeHtml(order.province || '')}`,
+    `العنوان: ${escapeHtml(order.address || '')}`,
     ``,
     `المنتجات:`,
     confirmationItems,
@@ -63,9 +67,9 @@ export async function sendOrderNotification(order: any) {
     `🛒 طلب جديد في FalconPro!`,
     ``,
     `🆔 الطلب: #${shortOrderId}`,
-    `📞 الهاتف: ${order.phone}`,
-    `📍 المحافظة: ${order.province}`,
-    `🏠 العنوان: ${order.address}`,
+    `📞 الهاتف: ${escapeHtml(order.phone || '')}`,
+    `📍 المحافظة: ${escapeHtml(order.province || '')}`,
+    `🏠 العنوان: ${escapeHtml(order.address || '')}`,
     ``,
     `📦 المنتجات:`,
     itemsText,
@@ -103,6 +107,7 @@ export async function sendOrderNotification(order: any) {
     const payload: any = {
       chat_id: chatId,
       text: message,
+      parse_mode: 'HTML',
       disable_web_page_preview: true,
     };
 
