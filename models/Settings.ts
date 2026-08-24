@@ -92,6 +92,10 @@ const SettingsSchema = new mongoose.Schema({
   packagesTitleEn: { type: String, default: 'Package Deals' },
   featuredTitleAr: { type: String, default: 'منتجات مميزة' },
   featuredTitleEn: { type: String, default: 'Featured Products' },
+  whatsappTemplate: {
+    type: String,
+    default: 'رقم الطلب: #{orderId}\n\nالهاتف: {phone}\nالمحافظة: {province}\nالعنوان: {address}\n\nالمنتجات:\n{items}\n\nالمجموع: {total} د.ع{discount}{delivery}\nالنهائي: {final} د.ع',
+  },
   updatedAt: {
     type: Date,
     default: Date.now,

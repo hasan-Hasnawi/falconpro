@@ -17,6 +17,7 @@ export default function AdminSettings() {
   const [packagesTitleEn, setPackagesTitleEn] = useState('Package Deals');
   const [featuredTitleAr, setFeaturedTitleAr] = useState('منتجات مميزة');
   const [featuredTitleEn, setFeaturedTitleEn] = useState('Featured Products');
+  const [whatsappTemplate, setWhatsappTemplate] = useState('رقم الطلب: #{orderId}\n\nالهاتف: {phone}\nالمحافظة: {province}\nالعنوان: {address}\n\nالمنتجات:\n{items}\n\nالمجموع: {total} د.ع{discount}{delivery}\nالنهائي: {final} د.ع');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -37,6 +38,7 @@ export default function AdminSettings() {
           setPackagesTitleEn(s.packagesTitleEn || 'Package Deals');
           setFeaturedTitleAr(s.featuredTitleAr || 'منتجات مميزة');
           setFeaturedTitleEn(s.featuredTitleEn || 'Featured Products');
+          setWhatsappTemplate(s.whatsappTemplate || 'رقم الطلب: #{orderId}\n\nالهاتف: {phone}\nالمحافظة: {province}\nالعنوان: {address}\n\nالمنتجات:\n{items}\n\nالمجموع: {total} د.ع{discount}{delivery}\nالنهائي: {final} د.ع');
         }
         setLoading(false);
       })
@@ -60,6 +62,7 @@ export default function AdminSettings() {
         packagesTitleEn,
         featuredTitleAr,
         featuredTitleEn,
+        whatsappTemplate,
       }),
     });
     if (res.ok) {
@@ -258,6 +261,38 @@ export default function AdminSettings() {
                   onChange={(e) => setFeaturedTitleEn(e.target.value)}
                   className="input-field"
                 />
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-100" />
+
+          {/* WhatsApp Template Section */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-falcon-dark flex items-center gap-2">
+              <FileText className="w-6 h-6 text-falcon-blue" />
+              رسالة تأكيد الواتساب
+            </h2>
+            <p className="text-gray-400 text-sm">رسالة التأكيد التي تُنسخ من رسالة التليجرام وتُرسل للعميل عبر الواتساب.</p>
+            <div>
+              <label className="text-gray-600 text-sm mb-2 block font-medium">قالب الرسالة</label>
+              <textarea
+                value={whatsappTemplate}
+                onChange={(e) => setWhatsappTemplate(e.target.value)}
+                rows={10}
+                className="input-field resize-none font-mono text-sm"
+                dir="rtl"
+              />
+            </div>
+            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+              <p className="text-gray-500 text-xs font-medium mb-2">المتغيرات المتاحة:</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  '{orderId}', '{phone}', '{province}', '{address}',
+                  '{items}', '{total}', '{discount}', '{delivery}', '{final}'
+                ].map((v) => (
+                  <code key={v} className="px-2 py-1 bg-white border border-gray-200 rounded text-xs text-falcon-blue font-mono">{v}</code>
+                ))}
               </div>
             </div>
           </div>

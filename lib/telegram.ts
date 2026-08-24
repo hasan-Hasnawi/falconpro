@@ -1,3 +1,6 @@
+import Settings from '@/models/Settings';
+import dbConnect from '@/lib/db';
+
 function escapeHtml(text: string) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -39,29 +42,25 @@ export async function sendOrderNotification(order: any) {
     return `${escapeHtml(name)} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
   }).join('\n');
 
-  const confirmationDiscount = order.discountAmount
-    ? `\nالخصم: -${order.discountAmount.toLocaleString()} د.ع`
-    : '';
+  let template = 'رقم الطلب: #{orderId}\n\nالهاتف: {phone}\nالمحافظة: {province}\nالعنوان: {address}\n\nالمنتجات:\n{items}\n\nالمجموع: {total} د.ع{discount}{delivery}\nالنهائي: {final} د.ع';
+  try {
+    await dbConnect();
+    const settings = await Settings.findOne();
+    if (settings?.whatsappTemplate) {
+      template = settings.whatsappTemplate;
+    }
+  } catch {}
 
-  const confirmationDelivery = order.deliveryFee
-    ? `\nالتوصيل: ${order.deliveryFee.toLocaleString()} د.ع`
-    : '';
-
-  const confirmationText = [
-    `رقم الطلب: #${shortOrderId}`,
-    ``,
-    `الهاتف: ${escapeHtml(order.phone || '')}`,
-    `المحافظة: ${escapeHtml(order.province || '')}`,
-    `العنوان: ${escapeHtml(order.address || '')}`,
-    ``,
-    `المنتجات:`,
-    confirmationItems,
-    ``,
-    `المجموع: ${order.total.toLocaleString()} د.ع`,
-    confirmationDiscount,
-    confirmationDelivery,
-    `النهائي: ${order.finalTotal.toLocaleString()} د.ع`,
-  ].filter(Boolean).join('\n');
+  const confirmationText = template
+    .replace('{orderId}', shortOrderId)
+    .replace('{phone}', escapeHtml(order.phone || ''))
+    .replace('{province}', escapeHtml(order.province || ''))
+    .replace('{address}', escapeHtml(order.address || ''))
+    .replace('{items}', confirmationItems)
+    .replace('{total}', order.total.toLocaleString())
+    .replace('{discount}', order.discountAmount ? `\nالخصم: -${order.discountAmount.toLocaleString()} د.ع` : '')
+    .replace('{delivery}', order.deliveryFee ? `\nالتوصيل: ${order.deliveryFee.toLocaleString()} د.ع` : '')
+    .replace('{final}', order.finalTotal.toLocaleString());
 
   const message = [
     `🛒 طلب جديد في FalconPro!`,
