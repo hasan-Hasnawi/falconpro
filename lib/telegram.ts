@@ -99,7 +99,7 @@ export async function sendOrderNotification(order: any) {
   if (phone) {
     row.push({
       text: '💬 تأكيد عبر واتساب',
-      url: `https://wa.me/${phone}`,
+      url: `https://wa.me/${phone}?text=`,
     });
   }
 
