@@ -30,6 +30,7 @@
     "viewAll": "عرض الكل"
   },
   "products": {
+    "products": "المنتجات",
     "addToCart": "أضف للسلة",
     "outOfStock": "نفذت الكمية",
     "price": "السعر",

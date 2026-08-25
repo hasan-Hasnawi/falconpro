@@ -30,6 +30,7 @@
     "viewAll": "View All"
   },
   "products": {
+    "products": "Products",
     "addToCart": "Add to Cart",
     "outOfStock": "Out of Stock",
     "price": "Price",
