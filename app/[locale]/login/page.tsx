@@ -36,6 +36,12 @@ export default function LoginPage() {
       return;
     }
 
+    if (!/^07\d{9}$/.test(phone)) {
+      setError('رقم الهاتف يجب أن يكون 11 رقم يبدأ بـ 07');
+      setLoading(false);
+      return;
+    }
+
     showToast(
       mode === 'login' ? 'جاري تسجيل الدخول...' : 'جاري إنشاء الحساب...',
       'success'
@@ -93,7 +99,7 @@ export default function LoginPage() {
 
             <div>
               <label className="text-gray-600 text-sm mb-2 block">{t('phone')}</label>
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required placeholder="07XX XXX XXXX" className="input-field" />
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 11))} required placeholder="07XX XXX XXXX" className="input-field" maxLength={11} />
             </div>
 
             <div>

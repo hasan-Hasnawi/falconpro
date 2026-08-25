@@ -56,6 +56,7 @@ export default function CheckoutPage() {
   const [discountError, setDiscountError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [userCoupons, setUserCoupons] = useState<Coupon[]>([]);
   const [showCoupons, setShowCoupons] = useState(false);
@@ -189,6 +190,8 @@ export default function CheckoutPage() {
 
   const submitOrder = async () => {
     if (!phone || !province || !address || isProvinceExcluded) return;
+    if (!/^07\d{9}$/.test(phone)) { setPhoneError(true); return; }
+    setPhoneError(false);
     setLoading(true);
     showToast('جاري إرسال الطلب...', 'success');
 
@@ -322,10 +325,12 @@ export default function CheckoutPage() {
                 <input
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="input-field"
+                  onChange={(e) => { setPhone(e.target.value.replace(/\D/g, '').slice(0, 11)); setPhoneError(false); }}
+                  className={`input-field ${phoneError ? 'border-red-500 focus:ring-red-500' : ''}`}
                   placeholder="07XX XXX XXXX"
+                  maxLength={11}
                 />
+                {phoneError && <p className="text-red-500 text-xs mt-1">رقم الهاتف يجب أن يكون 11 رقم يبدأ بـ 07</p>}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -502,7 +507,7 @@ export default function CheckoutPage() {
           {/* Submit */}
           <button
             onClick={submitOrder}
-            disabled={loading || !phone || !province || !address || isProvinceExcluded}
+            disabled={loading || !phone || !/^07\d{9}$/.test(phone) || !province || !address || isProvinceExcluded}
             className="w-full py-4 bg-falcon-blue text-white font-bold rounded-xl hover:bg-falcon-blueDark transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? (

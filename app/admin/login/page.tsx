@@ -25,6 +25,12 @@ export default function AdminLoginPage() {
         return;
       }
 
+      if (!/^07\d{9}$/.test(phone)) {
+        setError('رقم الهاتف يجب أن يكون 11 رقم يبدأ بـ 07');
+        setLoading(false);
+        return;
+      }
+
       const res = await fetch('/api/auth/admin-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -63,10 +69,11 @@ export default function AdminLoginPage() {
               <input
                 type="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
                 required
                 className="input-field"
                 placeholder="07XX XXX XXXX"
+                maxLength={11}
               />
             </div>
 
