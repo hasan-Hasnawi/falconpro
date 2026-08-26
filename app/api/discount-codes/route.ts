@@ -103,6 +103,42 @@ export async function GET(req: NextRequest) {
   }
 }
 
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { code, type, value, minOrder, usageLimit, isActive } = body;
+
+    if (!code || !type || value === undefined || value === null) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    if (!['percentage', 'fixed'].includes(type)) {
+      return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
+    }
+
+    await dbConnect();
+
+    const existing = await DiscountCode.findOne({ code: code.toUpperCase() });
+    if (existing) {
+      return NextResponse.json({ error: 'هذا الكود موجود بالفعل' }, { status: 409 });
+    }
+
+    const discount = await DiscountCode.create({
+      code: code.toUpperCase(),
+      type,
+      value: Number(value),
+      minOrder: Number(minOrder) || 0,
+      usageLimit: usageLimit ? Number(usageLimit) : null,
+      isActive: isActive !== false,
+    });
+
+    return NextResponse.json({ success: true, discount });
+  } catch (error) {
+    console.error('Discount codes POST error:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  }
+}
+
 export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);

@@ -30,6 +30,7 @@ export default function AdminDiscountCodes() {
     minOrder: '0',
     usageLimit: '',
   });
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -46,23 +47,37 @@ export default function AdminDiscountCodes() {
   };
 
   const createCode = async () => {
-    const res = await fetch('/api/discount-codes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        code: form.code,
-        type: form.type,
-        value: Number(form.value),
-        minOrder: Number(form.minOrder) || 0,
-        usageLimit: form.usageLimit ? Number(form.usageLimit) : null,
-        isActive: true,
-      }),
-    });
-    if (res.ok) {
-      setShowForm(false);
-      setForm({ code: '', type: 'percentage', value: '', minOrder: '0', usageLimit: '' });
-      loadData();
+    if (!form.code.trim() || !form.value) {
+      showToast('أدخل الكود والقيمة', 'error');
+      return;
     }
+    setCreating(true);
+    try {
+      const res = await fetch('/api/discount-codes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: form.code,
+          type: form.type,
+          value: Number(form.value),
+          minOrder: Number(form.minOrder) || 0,
+          usageLimit: form.usageLimit ? Number(form.usageLimit) : null,
+          isActive: true,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast('تم إنشاء كود الخصم بنجاح', 'success');
+        setShowForm(false);
+        setForm({ code: '', type: 'percentage', value: '', minOrder: '0', usageLimit: '' });
+        loadData();
+      } else {
+        showToast(data.error || 'فشل إنشاء الكود', 'error');
+      }
+    } catch {
+      showToast('حدث خطأ في الاتصال', 'error');
+    }
+    setCreating(false);
   };
 
   const openDeleteDialog = (code: DiscountCode) => {
@@ -154,8 +169,12 @@ export default function AdminDiscountCodes() {
               <input placeholder="الحد الأدنى للطلب (اختياري)" type="number" value={form.minOrder} onChange={(e) => setForm({ ...form, minOrder: e.target.value })} className="input-field" />
               <input placeholder="حد الاستخدام (اختياري)" type="number" value={form.usageLimit} onChange={(e) => setForm({ ...form, usageLimit: e.target.value })} className="input-field sm:col-span-2" />
             </div>
-            <button onClick={createCode} className="btn-primary">
-              <Plus className="w-5 h-5 inline-block ml-2" />
+            <button onClick={createCode} disabled={creating} className="btn-primary disabled:opacity-50">
+              {creating ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block ml-2" />
+              ) : (
+                <Plus className="w-5 h-5 inline-block ml-2" />
+              )}
               حفظ الكود
             </button>
           </div>

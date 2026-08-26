@@ -401,12 +401,10 @@ export default function CheckoutPage() {
                     type="text"
                     value={discountCode}
                     onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
-                    onBlur={() => { if (discountCode.trim()) applyDiscountCode(); }}
                     placeholder={t('discountCode')}
                     className="input-field flex-1"
                   />
                   <button
-                    type="button"
                     onClick={applyDiscountCode}
                     className="px-6 py-3 bg-falcon-blue text-white font-bold rounded-xl hover:bg-falcon-blueDark transition-colors"
                   >
