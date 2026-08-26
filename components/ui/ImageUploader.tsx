@@ -89,6 +89,7 @@ export default function ImageUploader({ images, onChange, multiple = true, label
         onChange={handleFileSelect}
         className="hidden"
       />
+      <p className="text-xs text-gray-400">القياس المطلوب: 800×800 مربع — الصورة تُقص تلقائياً</p>
     </div>
   );
 }

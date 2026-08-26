@@ -121,7 +121,7 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Image Gallery */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-            <div className="relative aspect-[4/3] sm:aspect-square bg-gray-50 rounded-2xl overflow-hidden">
+            <div className="relative aspect-square bg-gray-50 rounded-2xl overflow-hidden">
               <Image
                 key={mainImage}
                 src={mainImage}

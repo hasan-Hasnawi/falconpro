@@ -40,6 +40,9 @@ export async function POST(req: NextRequest) {
       const uploadRes = await cloudinary.uploader.upload(dataURI, {
         folder: 'falconpro',
         resource_type: 'image',
+        transformation: [
+          { width: 800, height: 800, crop: 'fill', gravity: 'auto', quality: 'auto', format: 'auto' },
+        ],
       });
 
       urls.push(uploadRes.secure_url);
