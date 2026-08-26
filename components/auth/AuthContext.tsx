@@ -92,7 +92,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       document.cookie = 'admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     }
-    router.push('/');
+    const pathLocale = window.location.pathname.match(/^\/(ar|en)/)?.[1] || 'ar';
+    router.push(`/${pathLocale}`);
     router.refresh();
   };
 

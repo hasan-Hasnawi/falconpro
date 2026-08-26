@@ -28,6 +28,9 @@ export default function Header() {
   const isRTL = locale === 'ar';
 
   const switchLocale = locale === 'ar' ? 'en' : 'ar';
+  const switchPath = typeof window !== 'undefined'
+    ? window.location.pathname.replace(/^\/(ar|en)/, `/${switchLocale}`)
+    : `/${switchLocale}`;
 
   return (
     <motion.header
@@ -75,7 +78,7 @@ export default function Header() {
           <div className="flex items-center gap-3">
             {/* Locale Switch */}
             <Link
-              href={`/${switchLocale}`}
+              href={switchPath}
               className="text-white/60 hover:text-falcon-gold text-sm font-medium transition-colors"
             >
               {locale === 'ar' ? 'EN' : 'عربي'}
