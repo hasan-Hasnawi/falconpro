@@ -25,7 +25,8 @@ export async function sendOrderNotification(order: any) {
   const itemsText = order.items
     .map((item: any, i: number) => {
       const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-      return `${i + 1}. ${escapeHtml(name)} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
+      const flavorText = item.flavor?.name?.ar ? ` (${escapeHtml(item.flavor.name.ar)})` : '';
+      return `${i + 1}. ${escapeHtml(name)}${flavorText} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
     })
     .join('\n');
 
@@ -39,7 +40,8 @@ export async function sendOrderNotification(order: any) {
 
   const confirmationItems = order.items.map((item: any) => {
     const name = typeof item.name === 'object' ? (item.name.ar || item.name.en || '') : item.name;
-    return `${escapeHtml(name)} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
+    const flavorText = item.flavor?.name?.ar ? ` (${escapeHtml(item.flavor.name.ar)})` : '';
+    return `${escapeHtml(name)}${flavorText} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} د.ع`;
   }).join('\n');
 
   let template = 'رقم الطلب: #{orderId}\n\nالهاتف: {phone}\nالمحافظة: {province}\nالعنوان: {address}\n\nالمنتجات:\n{items}\n\nالمجموع: {total} د.ع{discount}{delivery}\nالنهائي: {final} د.ع';
