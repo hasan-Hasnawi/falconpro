@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShoppingCart, Check, Truck, Shield, AlertCircle } from 'lucide-react';
+import { ArrowRight, ShoppingCart, Check, Truck, Shield, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { useCart } from '@/components/cart/CartContext';
 
@@ -38,6 +38,7 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
   const [selectedFlavor, setSelectedFlavor] = useState<ProductFlavor | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -76,7 +77,13 @@ export default function ProductDetailPage() {
   const name = (product.name as any)[locale] || product.name.en;
   const description = (product.description as any)[locale] || product.description.en;
   const displayPrice = product.isOnSale && product.salePrice ? product.salePrice : product.price;
-  const mainImage = selectedFlavor?.image || product.images[0] || 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=800&q=80';
+  const hasFlavors = product.flavors && product.flavors.length > 0;
+  const galleryImages = hasFlavors
+    ? product.flavors!.map(f => f.image)
+    : product.images.length > 0
+    ? product.images
+    : ['https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=800&q=80'];
+  const mainImage = galleryImages[selectedImageIndex] || galleryImages[0];
 
   const isOutOfStock = product.isOutOfStock || (selectedFlavor ? selectedFlavor.stock <= 0 : product.stock <= 0);
   const availableStock = selectedFlavor ? selectedFlavor.stock : product.stock;
@@ -112,27 +119,63 @@ export default function ProductDetailPage() {
         </motion.button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Image */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="relative aspect-[4/3] sm:aspect-square bg-gray-50 rounded-2xl overflow-hidden">
-            <Image
-              src={mainImage}
-              alt={name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
-            {product.isOnSale && (
-              <div className="absolute top-4 left-4 px-3 py-1 bg-red-500 text-white font-bold rounded-lg">
-                SALE
-              </div>
-            )}
-            {isOutOfStock && (
-              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                <div className="bg-red-500 text-white px-6 py-3 rounded-xl font-bold text-lg flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5" />
-                  نفذت الكمية
+          {/* Image Gallery */}
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+            <div className="relative aspect-[4/3] sm:aspect-square bg-gray-50 rounded-2xl overflow-hidden">
+              <Image
+                key={mainImage}
+                src={mainImage}
+                alt={name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
+              {product.isOnSale && (
+                <div className="absolute top-4 left-4 px-3 py-1 bg-red-500 text-white font-bold rounded-lg z-10">
+                  SALE
                 </div>
+              )}
+              {isOutOfStock && (
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
+                  <div className="bg-red-500 text-white px-6 py-3 rounded-xl font-bold text-lg flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5" />
+                    نفذت الكمية
+                  </div>
+                </div>
+              )}
+              {galleryImages.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setSelectedImageIndex((selectedImageIndex - 1 + galleryImages.length) % galleryImages.length)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg z-10 transition-colors"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-falcon-dark" />
+                  </button>
+                  <button
+                    onClick={() => setSelectedImageIndex((selectedImageIndex + 1) % galleryImages.length)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg z-10 transition-colors"
+                  >
+                    <ChevronRight className="w-5 h-5 text-falcon-dark" />
+                  </button>
+                </>
+              )}
+            </div>
+            {galleryImages.length > 1 && (
+              <div className="flex gap-2 mt-3 overflow-x-auto pb-2">
+                {galleryImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImageIndex(idx)}
+                    className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                      idx === selectedImageIndex
+                        ? 'border-falcon-blue shadow-lg shadow-falcon-blue/20'
+                        : 'border-gray-200 opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <Image src={img} alt="" fill className="object-cover" sizes="80px" />
+                  </button>
+                ))}
               </div>
             )}
           </motion.div>
@@ -164,6 +207,7 @@ export default function ProductDetailPage() {
                       key={index}
                       onClick={() => {
                         setSelectedFlavor(flavor);
+                        setSelectedImageIndex(product.flavors!.indexOf(flavor));
                         setQuantity(1);
                       }}
                       className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all ${
