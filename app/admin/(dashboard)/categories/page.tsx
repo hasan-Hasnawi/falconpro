@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, Layers } from 'lucide-react';
+import { Plus, Trash2, Layers, Pencil } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import ImageUploader from '@/components/ui/ImageUploader';
@@ -23,6 +23,7 @@ export default function AdminCategories() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [form, setForm] = useState({
     nameAr: '',
     nameEn: '',
@@ -47,36 +48,68 @@ export default function AdminCategories() {
       .catch(console.error);
   };
 
+  const resetForm = () => {
+    setForm({ nameAr: '', nameEn: '', type: 'main', parentCategory: '', sortOrder: '0', icon: '', image: '' });
+    setEditingCategory(null);
+  };
+
+  const openEditForm = (cat: Category) => {
+    setEditingCategory(cat);
+    setForm({
+      nameAr: (cat.name as any).ar || '',
+      nameEn: (cat.name as any).en || '',
+      type: cat.type || 'main',
+      parentCategory: cat.parentCategory || '',
+      sortOrder: String(cat.sortOrder ?? 0),
+      icon: (cat as any).icon || '',
+      image: (cat as any).image || '',
+    });
+    setShowForm(true);
+  };
+
   const createCategory = async () => {
     if (!form.nameAr.trim()) {
       showToast('أدخل اسم القسم بالعربي', 'error');
       return;
     }
     try {
+      const isEditing = !!editingCategory;
       const res = await fetch('/api/categories', {
-        method: 'POST',
+        method: isEditing ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         cache: 'no-store',
-        body: JSON.stringify({
-          name: { ar: form.nameAr, en: form.nameEn },
-          type: form.type,
-          parentCategory: form.parentCategory || null,
-          sortOrder: Number(form.sortOrder),
-          icon: form.icon,
-          image: form.image,
-        }),
+        body: JSON.stringify(
+          isEditing
+            ? {
+                _id: editingCategory._id,
+                name: { ar: form.nameAr, en: form.nameEn },
+                type: form.type,
+                parentCategory: form.parentCategory || null,
+                sortOrder: Number(form.sortOrder),
+                icon: form.icon,
+                image: form.image,
+              }
+            : {
+                name: { ar: form.nameAr, en: form.nameEn },
+                type: form.type,
+                parentCategory: form.parentCategory || null,
+                sortOrder: Number(form.sortOrder),
+                icon: form.icon,
+                image: form.image,
+              }
+        ),
       });
       if (res.ok) {
-        showToast('تم إضافة القسم بنجاح', 'success');
+        showToast(isEditing ? 'تم تعديل القسم بنجاح' : 'تم إضافة القسم بنجاح', 'success');
         setShowForm(false);
-        setForm({ nameAr: '', nameEn: '', type: 'main', parentCategory: '', sortOrder: '0', icon: '', image: '' });
+        resetForm();
         loadData();
       } else {
         const data = await res.json();
-        showToast(data.error || 'فشل إضافة القسم', 'error');
+        showToast(data.error || 'فشل حفظ القسم', 'error');
       }
     } catch {
-      showToast('حدث خطأ أثناء إضافة القسم', 'error');
+      showToast('حدث خطأ أثناء حفظ القسم', 'error');
     }
   };
 
@@ -142,7 +175,7 @@ export default function AdminCategories() {
           <p className="text-gray-400 text-sm mt-1">{categories.length} قسم</p>
         </div>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => { setShowForm(!showForm); if (showForm) resetForm(); }}
           className="flex items-center gap-2 px-6 py-3 bg-falcon-blue text-white font-bold rounded-xl hover:bg-falcon-blueDark transition-all shadow-lg shadow-falcon-blue/25"
         >
           <Plus className="w-5 h-5" />
@@ -159,7 +192,7 @@ export default function AdminCategories() {
         >
           <div className="h-1 bg-gradient-to-r from-falcon-blue to-falcon-blueLight" />
           <div className="p-6 space-y-6">
-            <h2 className="text-xl font-bold text-falcon-dark">إضافة قسم جديد</h2>
+            <h2 className="text-xl font-bold text-falcon-dark">{editingCategory ? 'تعديل القسم' : 'إضافة قسم جديد'}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input placeholder="اسم القسم (عربي)" value={form.nameAr} onChange={(e) => setForm({ ...form, nameAr: e.target.value })} className="input-field" />
               <input placeholder="Category Name (English)" value={form.nameEn} onChange={(e) => setForm({ ...form, nameEn: e.target.value })} className="input-field" />
@@ -185,8 +218,11 @@ export default function AdminCategories() {
               label="صورة القسم (اختياري)"
             />
             <button onClick={createCategory} className="btn-primary">
-              <Plus className="w-5 h-5 inline-block ml-2" />
-              حفظ القسم
+              {editingCategory ? (
+                <><Pencil className="w-5 h-5 inline-block ml-2" />حفظ التعديلات</>
+              ) : (
+                <><Plus className="w-5 h-5 inline-block ml-2" />حفظ القسم</>
+              )}
             </button>
           </div>
         </motion.div>
@@ -212,12 +248,20 @@ export default function AdminCategories() {
                     رئيسي
                   </span>
                 </div>
-                <button 
-                  onClick={() => openDeleteDialog(cat)}
-                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={() => openEditForm(cat)}
+                    className="p-2 text-gray-400 hover:text-falcon-blue hover:bg-falcon-bluePale rounded-xl transition-all"
+                  >
+                    <Pencil className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={() => openDeleteDialog(cat)}
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -244,12 +288,20 @@ export default function AdminCategories() {
                     فرعي
                   </span>
                 </div>
-                <button 
-                  onClick={() => openDeleteDialog(cat)}
-                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={() => openEditForm(cat)}
+                    className="p-2 text-gray-400 hover:text-falcon-blue hover:bg-falcon-bluePale rounded-xl transition-all"
+                  >
+                    <Pencil className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={() => openDeleteDialog(cat)}
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))}
