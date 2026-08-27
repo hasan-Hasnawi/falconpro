@@ -47,9 +47,6 @@ export default function ProductDetailPage() {
       .then(data => {
         const found = data.products?.find((p: any) => p._id === productId);
         setProduct(found || null);
-        if (found?.flavors?.length > 0) {
-          setSelectedFlavor(found.flavors[0]);
-        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -78,8 +75,8 @@ export default function ProductDetailPage() {
   const description = (product.description as any)[locale] || product.description.en;
   const displayPrice = product.isOnSale && product.salePrice ? product.salePrice : product.price;
   const hasFlavors = product.flavors && product.flavors.length > 0;
-  const galleryImages = hasFlavors
-    ? product.flavors!.map(f => f.image)
+  const galleryImages = selectedFlavor
+    ? [selectedFlavor.image]
     : product.images.length > 0
     ? product.images
     : ['https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=800&q=80'];
@@ -207,7 +204,7 @@ export default function ProductDetailPage() {
                       key={index}
                       onClick={() => {
                         setSelectedFlavor(flavor);
-                        setSelectedImageIndex(product.flavors!.indexOf(flavor));
+                        setSelectedImageIndex(0);
                         setQuantity(1);
                       }}
                       className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all ${
