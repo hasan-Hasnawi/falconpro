@@ -17,6 +17,12 @@ interface HeroSettings {
   heroDescriptionEn: string;
   heroCtaAr: string;
   heroCtaEn: string;
+  heroMotivation1Ar: string;
+  heroMotivation1En: string;
+  heroMotivation2Ar: string;
+  heroMotivation2En: string;
+  heroMotivation3Ar: string;
+  heroMotivation3En: string;
   heroImages: string[];
 }
 
@@ -29,6 +35,12 @@ const defaultSettings: HeroSettings = {
   heroDescriptionEn: 'Best supplements and protein',
   heroCtaAr: 'Shop Now',
   heroCtaEn: 'Shop Now',
+  heroMotivation1Ar: 'لا حدود لقوتك',
+  heroMotivation1En: 'No Limits to Your Power',
+  heroMotivation2Ar: 'اصنع جسدك المثالي',
+  heroMotivation2En: 'Build Your Perfect Body',
+  heroMotivation3Ar: 'كل تدريب يقربك للقمة',
+  heroMotivation3En: 'Every Training Brings You Closer to the Top',
   heroImages: [],
 };
 
@@ -55,6 +67,12 @@ export default function HeroSection() {
             heroDescriptionEn: s.heroDescriptionEn || defaultSettings.heroDescriptionEn,
             heroCtaAr: s.heroCtaAr || defaultSettings.heroCtaAr,
             heroCtaEn: s.heroCtaEn || defaultSettings.heroCtaEn,
+            heroMotivation1Ar: s.heroMotivation1Ar || defaultSettings.heroMotivation1Ar,
+            heroMotivation1En: s.heroMotivation1En || defaultSettings.heroMotivation1En,
+            heroMotivation2Ar: s.heroMotivation2Ar || defaultSettings.heroMotivation2Ar,
+            heroMotivation2En: s.heroMotivation2En || defaultSettings.heroMotivation2En,
+            heroMotivation3Ar: s.heroMotivation3Ar || defaultSettings.heroMotivation3Ar,
+            heroMotivation3En: s.heroMotivation3En || defaultSettings.heroMotivation3En,
             heroImages: s.heroImages || [],
           });
         }
@@ -74,6 +92,9 @@ export default function HeroSection() {
   const subtitle = isRTL ? settings.heroSubtitleAr : settings.heroSubtitleEn;
   const description = isRTL ? settings.heroDescriptionAr : settings.heroDescriptionEn;
   const cta = isRTL ? settings.heroCtaAr : settings.heroCtaEn;
+  const motivation1 = isRTL ? (settings.heroMotivation1Ar || t('motivation1')) : (settings.heroMotivation1En || t('motivation1'));
+  const motivation2 = isRTL ? (settings.heroMotivation2Ar || t('motivation2')) : (settings.heroMotivation2En || t('motivation2'));
+  const motivation3 = isRTL ? (settings.heroMotivation3Ar || t('motivation3')) : (settings.heroMotivation3En || t('motivation3'));
   const hasImages = settings.heroImages.length > 0;
 
   return (
@@ -205,7 +226,7 @@ export default function HeroSection() {
               transition={{ delay: 0.8 }}
               className="mt-10 flex flex-wrap gap-3 justify-center lg:justify-start"
             >
-              {[t('motivation1'), t('motivation2'), t('motivation3')].map((msg, i) => (
+              {[motivation1, motivation2, motivation3].map((msg, i) => (
                 <span key={i} className="px-3 py-1.5 bg-white/10 text-white/70 text-sm rounded-lg border border-white/10">
                   {msg}
                 </span>
