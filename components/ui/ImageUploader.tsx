@@ -9,9 +9,11 @@ interface ImageUploaderProps {
   onChange: (images: string[]) => void;
   multiple?: boolean;
   label?: string;
+  width?: number;
+  height?: number;
 }
 
-export default function ImageUploader({ images, onChange, multiple = true, label = 'رفع صور' }: ImageUploaderProps) {
+export default function ImageUploader({ images, onChange, multiple = true, label = 'رفع صور', width = 800, height = 800 }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,6 +28,8 @@ export default function ImageUploader({ images, onChange, multiple = true, label
     try {
       const formData = new FormData();
       imageFiles.forEach((file) => formData.append('files', file));
+      formData.append('width', String(width));
+      formData.append('height', String(height));
 
       const res = await fetch('/api/upload', {
         method: 'POST',
@@ -89,7 +93,7 @@ export default function ImageUploader({ images, onChange, multiple = true, label
         onChange={handleFileSelect}
         className="hidden"
       />
-      <p className="text-xs text-gray-400">القياس المطلوب: 800×800 مربع — الصورة تُقص تلقائياً</p>
+      <p className="text-xs text-gray-400">القياس المطلوب: {width}×{height} — الصورة تُقص تلقائياً</p>
     </div>
   );
 }

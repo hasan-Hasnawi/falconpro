@@ -216,6 +216,8 @@ export default function AdminCategories() {
               onChange={(images) => setForm({ ...form, image: images[0] || '' })}
               multiple={false}
               label="صورة القسم (اختياري)"
+              width={1200}
+              height={675}
             />
             <button onClick={createCategory} className="btn-primary">
               {editingCategory ? (

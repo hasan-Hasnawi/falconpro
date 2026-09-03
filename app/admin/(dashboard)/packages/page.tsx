@@ -268,6 +268,8 @@ export default function AdminPackages() {
               onChange={(images) => setForm({ ...form, images })}
               multiple
               label="صور البكج"
+              width={1200}
+              height={675}
             />
 
             <label className="flex items-center gap-2 text-gray-600 text-sm cursor-pointer hover:text-falcon-blue transition-colors">

@@ -20,6 +20,8 @@ export async function POST(req: NextRequest) {
 
     const formData = await req.formData();
     const files = formData.getAll('files') as File[];
+    const width = Number(formData.get('width')) || 800;
+    const height = Number(formData.get('height')) || 800;
 
     if (!files || files.length === 0) {
       return NextResponse.json({ error: 'No files uploaded' }, { status: 400 });
@@ -41,7 +43,7 @@ export async function POST(req: NextRequest) {
         folder: 'falconpro',
         resource_type: 'image',
         transformation: [
-          { width: 800, height: 800, crop: 'fill', gravity: 'auto', quality: 'auto', format: 'auto' },
+          { width, height, crop: 'fill', gravity: 'auto', quality: 'auto', format: 'auto' },
         ],
       });
 
