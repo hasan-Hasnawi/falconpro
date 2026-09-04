@@ -18,9 +18,9 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: CartItem) => void;
+  addItem: (item: CartItem, maxStock?: number) => void;
   removeItem: (productId: string, flavorName?: string) => void;
-  updateQuantity: (productId: string, quantity: number, flavorName?: string) => void;
+  updateQuantity: (productId: string, quantity: number, flavorName?: string, maxStock?: number) => void;
   clearCart: () => void;
   getItemQuantity: (productId: string, flavorName?: string) => number;
   total: number;
@@ -54,18 +54,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items]);
 
-  const addItem = useCallback((item: CartItem) => {
+  const addItem = useCallback((item: CartItem, maxStock?: number) => {
     setItems((prev) => {
       const flavorName = item.flavor?.name?.ar || '';
       const existing = prev.find((i) => sameItem(i, item.productId, flavorName));
       if (existing) {
+        const newQty = existing.quantity + item.quantity;
+        const cappedQty = maxStock ? Math.min(newQty, maxStock) : newQty;
         return prev.map((i) =>
           sameItem(i, item.productId, flavorName)
-            ? { ...i, quantity: i.quantity + item.quantity }
+            ? { ...i, quantity: cappedQty }
             : i
         );
       }
-      return [...prev, item];
+      const cappedQty = maxStock ? Math.min(item.quantity, maxStock) : item.quantity;
+      return [...prev, { ...item, quantity: cappedQty }];
     });
   }, []);
 
@@ -79,7 +82,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number, flavorName?: string) => {
+  const updateQuantity = useCallback((productId: string, quantity: number, flavorName?: string, maxStock?: number) => {
     if (quantity < 1) {
       setItems((prev) => {
         const filtered = prev.filter((i) => !sameItem(i, productId, flavorName));
@@ -90,8 +93,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       });
       return;
     }
+    const cappedQty = maxStock ? Math.min(quantity, maxStock) : quantity;
     setItems((prev) =>
-      prev.map((i) => (sameItem(i, productId, flavorName) ? { ...i, quantity } : i))
+      prev.map((i) => (sameItem(i, productId, flavorName) ? { ...i, quantity: cappedQty } : i))
     );
   }, []);
 

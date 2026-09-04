@@ -30,7 +30,7 @@ const ProductCard = React.memo(function ProductCard({ product, locale }: Product
   const name = (product.name as any)[locale] || product.name.en;
   const displayPrice = product.isOnSale && product.salePrice ? product.salePrice : product.price;
 
-  const isOutOfStock = product.isOutOfStock || (product.stock ?? 0) <= 0;
+  const isOutOfStock = product.isOutOfStock || (product.flavors?.length ? product.flavors.every(f => f.stock <= 0) : (product.stock ?? 0) <= 0);
   const hasFlavors = (product.flavors?.length || 0) > 0;
 
   const handleAddToCart = useCallback((e: React.MouseEvent) => {

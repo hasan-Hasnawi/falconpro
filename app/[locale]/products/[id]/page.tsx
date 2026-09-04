@@ -82,13 +82,15 @@ export default function ProductDetailPage() {
     : ['https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=800&q=80'];
   const mainImage = galleryImages[selectedImageIndex] || galleryImages[0];
 
-  const isOutOfStock = product.isOutOfStock || (selectedFlavor ? selectedFlavor.stock <= 0 : product.stock <= 0);
+  const allFlavorsOutOfStock = hasFlavors && product.flavors!.every(f => f.stock <= 0);
+  const isOutOfStock = product.isOutOfStock || (hasFlavors ? allFlavorsOutOfStock : product.stock <= 0);
+  const mustSelectFlavor = hasFlavors && !selectedFlavor;
   const availableStock = selectedFlavor ? selectedFlavor.stock : product.stock;
   const cartQuantity = getItemQuantity(product._id, selectedFlavor?.name.ar);
   const canAddQuantity = Math.max(0, availableStock - cartQuantity);
 
   const handleAddToCart = () => {
-    if (isOutOfStock || quantity > canAddQuantity) return;
+    if (isOutOfStock || mustSelectFlavor || quantity > canAddQuantity) return;
 
     addItem({
       productId: product._id,
@@ -97,7 +99,7 @@ export default function ProductDetailPage() {
       quantity,
       image: mainImage,
       flavor: selectedFlavor || undefined,
-    });
+    }, availableStock);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -264,10 +266,12 @@ export default function ProductDetailPage() {
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={handleAddToCart}
-              disabled={isOutOfStock || quantity > canAddQuantity}
+              disabled={isOutOfStock || mustSelectFlavor || quantity > canAddQuantity}
               className={`flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-lg transition-all ${
                 isOutOfStock
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : mustSelectFlavor
+                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                   : added
                   ? 'bg-emerald-500 text-white'
                   : 'bg-falcon-blue text-white hover:bg-falcon-blueDark'
@@ -275,6 +279,8 @@ export default function ProductDetailPage() {
             >
               {isOutOfStock ? (
                 <><AlertCircle className="w-6 h-6" />نفذت الكمية</>
+              ) : mustSelectFlavor ? (
+                <><AlertCircle className="w-6 h-6" />اختر النكهة أولاً</>
               ) : added ? (
                 <><Check className="w-6 h-6" />تمت الإضافة للسلة</>
               ) : (
