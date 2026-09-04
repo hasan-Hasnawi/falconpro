@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ToastProvider } from '@/components/ui/Toast';
 import {
-  LayoutDashboard, Package, Layers, ShoppingCart, Tag, Settings, LogOut, Menu, X, Users, Gift,
+  LayoutDashboard, Package, Layers, ShoppingCart, Tag, Settings, LogOut, Menu, X, Users, Gift, TrendingUp,
 } from 'lucide-react';
 
 const navItems = [
@@ -18,6 +18,7 @@ const navItems = [
   { href: '/admin/users', label: 'المستخدمين', icon: <Users className="w-5 h-5" /> },
   { href: '/admin/discount-codes', label: 'أكواد الخصم', icon: <Tag className="w-5 h-5" /> },
   { href: '/admin/loyalty', label: 'كرت الولاء', icon: <Gift className="w-5 h-5" /> },
+  { href: '/admin/analytics', label: 'المحاسبة والإحصائيات', icon: <TrendingUp className="w-5 h-5" /> },
   { href: '/admin/settings', label: 'الإعدادات', icon: <Settings className="w-5 h-5" /> },
 ];
 
