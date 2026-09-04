@@ -42,7 +42,7 @@ interface AnalyticsData {
   };
 }
 
-const COLORS = ['#1E40AF', '#F59E0B', '#10B981', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'];
+const COLORS = ['#F59E0B', '#1E40AF', '#8B5CF6', '#EF4444', '#10B981', '#EC4899', '#06B6D4', '#84CC16'];
 
 const periods = [
   { value: 'all', label: 'كل الوقت' },
